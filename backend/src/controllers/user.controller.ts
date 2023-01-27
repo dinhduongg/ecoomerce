@@ -15,12 +15,6 @@ export class UserController {
         return this.userService.findAll();
     }
 
-    // @Post('create')
-    // @Roles(AuthorityRole.ADMIN, AuthorityRole.MANAGER)
-    // create(@Body() dto: UserDTO): Promise<UserDTO> {
-    //   return this.userService.create(dto);
-    // }
-
     @Get(':username')
     findOne(@Param('username') username: string): Promise<UserDTO> {
         return this.userService.findOne(username);

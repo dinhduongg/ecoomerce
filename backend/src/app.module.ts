@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration from './config/configuration';
+import { AuthModule } from './module/auth.module';
+import { UserModule } from './module/user.module';
 
 
 @Module({
@@ -24,6 +26,8 @@ import configuration from './config/configuration';
       inject: [ConfigService],
     }),
     CacheModule.register({ isGlobal: true, ttl: Number.MAX_SAFE_INTEGER }),
+    AuthModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

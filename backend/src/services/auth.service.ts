@@ -64,4 +64,8 @@ export class AuthService {
             throw error
         }
     }
+
+    async generateRefreshToken() {
+
+    }
 }

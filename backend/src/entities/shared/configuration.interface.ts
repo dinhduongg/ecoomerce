@@ -9,6 +9,8 @@ export namespace Configuration {
         authentication: {
             jwt: {
                 secret: string
+                access: string
+                refresh: string
             }
         }
     }

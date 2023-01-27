@@ -26,4 +26,5 @@ export declare class AuthService {
     }>;
     register(dto: registerData): Promise<void>;
     logout(request: Request, response: Response): Promise<void>;
+    generateRefreshToken(): Promise<void>;
 }

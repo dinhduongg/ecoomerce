@@ -76,6 +76,8 @@ let AuthService = class AuthService {
             throw error;
         }
     }
+    async generateRefreshToken() {
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
