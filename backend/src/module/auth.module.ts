@@ -1,7 +1,5 @@
-import { AccessTokenStrategy } from '@/authentication/accessToken.strategy';
 import { JwtStrategy } from '@/authentication/jwt.strategy';
 import { LocalStrategy } from '@/authentication/local.strategy';
-import { RefreshTokenStrategy } from '@/authentication/refreshToken.strategy';
 import { AuthController } from '@/controllers/auth.controller';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -24,7 +22,7 @@ import { UserModule } from './user.module';
         JwtModule.register({})
     ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, JwtStrategy, AccessTokenStrategy, RefreshTokenStrategy],
+    providers: [AuthService, LocalStrategy, JwtStrategy],
     exports: [AuthService]
 })
 export class AuthModule { }

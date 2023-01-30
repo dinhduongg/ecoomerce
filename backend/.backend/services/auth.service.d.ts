@@ -1,11 +1,16 @@
 import { registerData } from '@/entities/shared/auth.interface';
+import { EntityManager } from '@mikro-orm/mongodb';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
+import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 export declare class AuthService {
     private userService;
     private jwtService;
-    constructor(userService: UserService, jwtService: JwtService);
+    private config;
+    private em;
+    constructor(userService: UserService, jwtService: JwtService, config: ConfigService, em: EntityManager);
     validateUser(username: string, password: string): Promise<{
         username: string;
         email?: string;
@@ -20,11 +25,9 @@ export declare class AuthService {
     }>;
     login(user: any, res: any): Promise<{
         accessToken: string;
-        username: any;
-        authorities: any;
-        fullname: any;
     }>;
     register(dto: registerData): Promise<void>;
     logout(request: Request, response: Response): Promise<void>;
-    generateRefreshToken(): Promise<void>;
+    generateAccessToken(dto: UserDTO): Promise<string>;
+    generateRefreshToken(dto: UserDTO): Promise<string>;
 }

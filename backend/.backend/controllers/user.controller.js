@@ -13,11 +13,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
+const authentication_1 = require("../authentication");
+const token_auth_guard_1 = require("../authentication/guards/token-auth.guard");
+const enum_1 = require("../entities/shared/enum");
+const user_dto_1 = require("../services/dto/user.dto");
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../services/user.service");
-const user_dto_1 = require("../services/dto/user.dto");
-const authentication_1 = require("../authentication");
-const enum_1 = require("../entities/shared/enum");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -79,7 +80,7 @@ __decorate([
 ], UserController.prototype, "remove", null);
 UserController = __decorate([
     (0, common_1.Controller)('users'),
-    (0, common_1.UseGuards)(authentication_1.JwtAuthGuard, authentication_1.RolesGuard),
+    (0, common_1.UseGuards)(token_auth_guard_1.TokenGuard, authentication_1.JwtAuthGuard, authentication_1.RolesGuard),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 exports.UserController = UserController;

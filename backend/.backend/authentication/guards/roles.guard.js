@@ -22,8 +22,11 @@ let RolesGuard = class RolesGuard {
             return true;
         }
         const request = context.switchToHttp().getRequest();
+        console.log(request.headers);
         const user = request.user;
-        return user && user.authorities && user.authorities.some((role) => roles.indexOf(role) >= 0);
+        if (!(user && user.authorities && user.authorities.some((role) => roles.indexOf(role) >= 0))) {
+            throw new common_1.HttpException("Bạn không có quyền sử dụng chức năng này", common_1.HttpStatus.BAD_REQUEST);
+        }
     }
 };
 RolesGuard = __decorate([
