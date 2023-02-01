@@ -78,7 +78,7 @@ export class AuthService {
     async logout(request: Request, response: Response) {
         try {
             const { jwt } = request.cookies
-            if (!jwt) throw new HttpException('no token', HttpStatus.NO_CONTENT)
+            if (!jwt) throw new HttpException('Lỗi! không có token', HttpStatus.BAD_GATEWAY)
 
             response.clearCookie("jwt", {
                 httpOnly: true,
@@ -87,7 +87,7 @@ export class AuthService {
                 sameSite: "strict",
             })
 
-            throw new HttpException('Đăng xuất', HttpStatus.NO_CONTENT)
+            throw new HttpException('Đăng xuất thành công', HttpStatus.ACCEPTED)
         } catch (error) {
             throw error
         }
