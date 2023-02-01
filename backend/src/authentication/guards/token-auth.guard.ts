@@ -1,10 +1,13 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { verify } from 'jsonwebtoken'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class TokenGuard implements CanActivate {
-    constructor(private readonly config: ConfigService) { }
+    constructor(
+        private readonly config: ConfigService,
+        private readonly jwtService: JwtService,
+    ) { }
 
     canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest()
@@ -14,12 +17,19 @@ export class TokenGuard implements CanActivate {
             return true
         }
 
-        verify(accessToken, this.config.get('security.authentication.jwt.access'), (err: any) => {
-            if (err) {
-                throw new HttpException('Token is not valid', HttpStatus.FORBIDDEN)
-            }
-        })
+        try {
+            this.jwtService.verify(accessToken, { secret: this.config.get('security.authentication.jwt.access') })
+            return true
+        } catch (error) {
+            throw new HttpException('access token hết hạn', HttpStatus.FORBIDDEN)
+        }
 
-        return true
+        // verify(accessToken, this.config.get('security.authentication.jwt.access'), (err: any) => {
+        //     if (err) {
+        //         throw new HttpException('access token hết hạn', HttpStatus.FORBIDDEN)
+        //     }
+        // })
+
+        // return true
     }
 }

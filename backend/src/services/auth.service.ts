@@ -8,7 +8,6 @@ import { compare } from 'bcrypt';
 import { Request, Response } from 'express';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
-import { verify } from 'jsonwebtoken'
 
 @Injectable()
 export class AuthService {
@@ -94,7 +93,18 @@ export class AuthService {
         }
     }
 
-    async generateAccessToken(dto: UserDTO) {
+    async refresh(dto) {
+        try {
+            const payload = this.jwtService.verify(dto.refreshToken, { secret: this.config.get<string>('security.authentication.jwt.refresh') })
+
+            const token = await this.generateAccessToken({ username: payload.username, authorities: payload.authorities, authority: payload.authority })
+            return { token }
+        } catch (error) {
+            throw new HttpException("Refresh token hết hạn", HttpStatus.EXPECTATION_FAILED)
+        }
+    }
+
+    async generateAccessToken(dto: any) {
         try {
             const accessToken = await this.jwtService.signAsync(
                 dto,
@@ -110,7 +120,7 @@ export class AuthService {
         }
     }
 
-    async generateRefreshToken(dto: UserDTO) {
+    async generateRefreshToken(dto: any) {
         try {
             const refreshToken = await this.jwtService.signAsync(
                 dto,
