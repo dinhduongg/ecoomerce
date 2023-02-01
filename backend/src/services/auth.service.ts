@@ -100,7 +100,7 @@ export class AuthService {
             const token = await this.generateAccessToken({ username: payload.username, authorities: payload.authorities, authority: payload.authority })
             return { token }
         } catch (error) {
-            throw new HttpException("Refresh token hết hạn", HttpStatus.EXPECTATION_FAILED)
+            throw new HttpException("Refresh token hết hạn", HttpStatus.NOT_IMPLEMENTED)
         }
     }
 

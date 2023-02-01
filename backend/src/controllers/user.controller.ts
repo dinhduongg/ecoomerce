@@ -1,12 +1,11 @@
 import { JwtAuthGuard, Roles, RolesGuard } from '@/authentication';
-import { TokenGuard } from '@/authentication/guards/token-auth.guard';
 import { AuthorityRole } from '@/entities/shared/enum';
 import { UserDTO } from '@/services/dto/user.dto';
 import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
 @Controller('users')
-@UseGuards(TokenGuard, JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
