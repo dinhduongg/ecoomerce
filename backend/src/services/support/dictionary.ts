@@ -1,5 +1,6 @@
 import { Category } from '@/entities/category.entity'
 import { Product } from '@/entities/product.entity'
+import { Review } from '@/entities/review.entity'
 import { AuthorityRole } from '@/entities/shared/enum'
 import { User } from '@/entities/user.entity'
 import { Builder } from 'builder-pattern'
@@ -38,3 +39,5 @@ export const generalProductTemplate = Builder(Product)
   .num_review(0)
   .avg_rating(0)
   .build()
+
+export const generalReviewTemplate = Builder(Review).product_id('').user_id('').rating(0).comment('').build()

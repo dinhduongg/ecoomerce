@@ -1,6 +1,6 @@
-import { Entity, Property, PrimaryKey } from '@mikro-orm/core'
 import { Product as IProduct } from '@/entities/shared/product.interface'
 import { SnowflakeBase } from '@/entities/support/base.entity'
+import { Entity, Property } from '@mikro-orm/core'
 
 @Entity()
 export class Product extends SnowflakeBase implements IProduct {
