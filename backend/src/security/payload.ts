@@ -1,3 +1,3 @@
-import { User } from "@/entities/shared/account.interface";
+import { User } from '@/entities/shared/account.interface'
 
 export type Payload = User

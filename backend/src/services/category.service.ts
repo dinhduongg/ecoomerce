@@ -1,19 +1,18 @@
-import { Category } from '@/entities/category.entity';
-import { Category as ICatecory } from '@/entities/shared/category.interface';
-import { EntityManager, MongoEntityRepository } from '@mikro-orm/mongodb';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable } from '@nestjs/common';
-import { cloneDeep } from 'lodash';
-import { generalCategoryTemplate } from './support/dictionary';
+import { Category } from '@/entities/category.entity'
+import { Category as ICatecory } from '@/entities/shared/category.interface'
+import { EntityManager, MongoEntityRepository } from '@mikro-orm/mongodb'
+import { InjectRepository } from '@mikro-orm/nestjs'
+import { Injectable } from '@nestjs/common'
+import { cloneDeep } from 'lodash'
+import { generalCategoryTemplate } from './support/dictionary'
 
 @Injectable()
 export class CategoryService {
-
   constructor(
     @InjectRepository(Category)
     protected readonly repository: MongoEntityRepository<Category>,
-    protected readonly em: EntityManager,
-  ) { }
+    protected readonly em: EntityManager
+  ) {}
 
   async create(dto: ICatecory) {
     try {

@@ -1,13 +1,12 @@
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { CacheModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import configuration from './config/configuration';
-import { AuthModule } from './module/auth.module';
-import { UserModule } from './module/user.module';
-import { CategoryModule } from './module/category.module';
-
+import { MikroOrmModule } from '@mikro-orm/nestjs'
+import { CacheModule, Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import configuration from './config/configuration'
+import { AuthModule } from './module/auth.module'
+import { UserModule } from './module/user.module'
+import { CategoryModule } from './module/category.module'
 
 @Module({
   imports: [
@@ -15,16 +14,16 @@ import { CategoryModule } from './module/category.module';
     MikroOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
-        console.log('config--------->>>', config);
-        return ({
+        console.log('config--------->>>', config)
+        return {
           dbName: config.get('database.mongoDbs'),
           entities: ['./.backend/entities/**/*.entity.js'],
           entitiesTs: ['./backend/entities/**/*.entity.ts'],
           type: 'mongo',
-          clientUrl: config.get('database.mongoUrl'),
-        })
+          clientUrl: config.get('database.mongoUrl')
+        }
       },
-      inject: [ConfigService],
+      inject: [ConfigService]
     }),
     CacheModule.register({ isGlobal: true, ttl: Number.MAX_SAFE_INTEGER }),
     AuthModule,
@@ -32,6 +31,6 @@ import { CategoryModule } from './module/category.module';
     CategoryModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
-export class AppModule { }
+export class AppModule {}

@@ -15,91 +15,97 @@ import { registerData } from '@/entities/shared/auth.interface'
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(User)
+    protected readonly repository: MongoEntityRepository<User>,
+    protected readonly em: EntityManager,
+    // protected eventEmitter: EventEmitter2,
+    protected readonly mapper: UserMapper,
+    @Inject(CACHE_MANAGER)
+    protected readonly _cache: Cache
+  ) {}
 
-    constructor(
-        @InjectRepository(User)
-        protected readonly repository: MongoEntityRepository<User>,
-        protected readonly em: EntityManager,
-        // protected eventEmitter: EventEmitter2,
-        protected readonly mapper: UserMapper,
-        @Inject(CACHE_MANAGER)
-        protected readonly _cache: Cache,
-    ) { }
-
-    async findAll(): Promise<UserDTO[]> {
-        try {
-            const users = await this.repository.find({})
-            return users.map((user) => this.mapper.toDTO(user))
-        } catch (error) {
-            throw error
-        }
+  async findAll(): Promise<UserDTO[]> {
+    try {
+      const users = await this.repository.find({})
+      return users.map((user) => this.mapper.toDTO(user))
+    } catch (error) {
+      throw error
     }
+  }
 
-    async findOne(username: string): Promise<UserDTO> {
-        try {
-            const user = await this.repository.findOne({ username: username })
-            if (!user) throw new HttpException({ error: { username: `Tài khoản ${username} không tồn tại` } }, HttpStatus.UNPROCESSABLE_ENTITY)
-            return this.mapper.toDTO(user)
-        } catch (error) {
-            throw error
-        }
+  async findOne(username: string): Promise<UserDTO> {
+    try {
+      const user = await this.repository.findOne({ username: username })
+      if (!user)
+        throw new HttpException(
+          { error: { username: `Tài khoản ${username} không tồn tại` } },
+          HttpStatus.UNPROCESSABLE_ENTITY
+        )
+      return this.mapper.toDTO(user)
+    } catch (error) {
+      throw error
     }
+  }
 
-    async create(dto: registerData): Promise<UserDTO | any> {
-        try {
-            if (dto.password !== dto.confirmPassword) throw new HttpException({ error: { password: "Mật khẩu không khớp" } }, HttpStatus.UNPROCESSABLE_ENTITY)
+  async create(dto: registerData): Promise<UserDTO | any> {
+    try {
+      if (dto.password !== dto.confirmPassword)
+        throw new HttpException({ error: { password: 'Mật khẩu không khớp' } }, HttpStatus.UNPROCESSABLE_ENTITY)
 
-            const checkUser = await this.repository.findOne({ username: dto.username })
-            if (checkUser) throw new HttpException({ error: { username: "Tên đăng nhập đã tồn tại" } }, HttpStatus.UNPROCESSABLE_ENTITY)
+      const checkUser = await this.repository.findOne({ username: dto.username })
+      if (checkUser)
+        throw new HttpException({ error: { username: 'Tên đăng nhập đã tồn tại' } }, HttpStatus.UNPROCESSABLE_ENTITY)
 
-            const user = this.repository.create(cloneDeep(generalUserTemplate))
-            user.username = dto.username
-            user.password = await hash(dto.password, 10)
+      const user = this.repository.create(cloneDeep(generalUserTemplate))
+      user.username = dto.username
+      user.password = await hash(dto.password, 10)
 
-            await this.repository.persistAndFlush(user)
-            return this.mapper.toDTO(user)
-        } catch (error) {
-            throw error
-        }
+      await this.repository.persistAndFlush(user)
+      return this.mapper.toDTO(user)
+    } catch (error) {
+      throw error
     }
+  }
 
-    async update(username: string, dto: UserDTO): Promise<UserDTO> {
-        try {
-            const user = await this.repository.findOne({ username: username })
-            if (!user) throw new HttpException(`Không tìm thấy người dùng ${username}`, HttpStatus.BAD_REQUEST)
-            wrap(user).assign(dto)
-            await this.repository.flush()
-            return userMapper.e2d(user)
-        } catch (error) {
-            throw error
-        }
+  async update(username: string, dto: UserDTO): Promise<UserDTO> {
+    try {
+      const user = await this.repository.findOne({ username: username })
+      if (!user) throw new HttpException(`Không tìm thấy người dùng ${username}`, HttpStatus.BAD_REQUEST)
+      wrap(user).assign(dto)
+      await this.repository.flush()
+      return userMapper.e2d(user)
+    } catch (error) {
+      throw error
     }
+  }
 
-    async resetPassword(username: string, action: string, dto: Pick<UserDTO, 'password'>): Promise<UserDTO> {
-        try {
-            const user = await this.repository.findOne({ username })
-            if (!user) throw new HttpException(`Không tìm thấy người dùng ${username}`, HttpStatus.BAD_REQUEST)
+  async resetPassword(username: string, action: string, dto: Pick<UserDTO, 'password'>): Promise<UserDTO> {
+    try {
+      const user = await this.repository.findOne({ username })
+      if (!user) throw new HttpException(`Không tìm thấy người dùng ${username}`, HttpStatus.BAD_REQUEST)
 
-            if (action === 'change') {
-                user.password = await hash(dto.password, 10)
-            }
+      if (action === 'change') {
+        user.password = await hash(dto.password, 10)
+      }
 
-            if (action === 'reset') { // reset
-                user.password = await hash(user.username, 10)
-            }
+      if (action === 'reset') {
+        // reset
+        user.password = await hash(user.username, 10)
+      }
 
-            await this.repository.persistAndFlush(user)
-            return this.mapper.toDTO(user)
-        } catch (error) {
-            throw error
-        }
+      await this.repository.persistAndFlush(user)
+      return this.mapper.toDTO(user)
+    } catch (error) {
+      throw error
     }
+  }
 
-    async remove(username: string) {
-        try {
-            return await this.repository.nativeDelete({ username })
-        } catch (error) {
-            throw error
-        }
+  async remove(username: string) {
+    try {
+      return await this.repository.nativeDelete({ username })
+    } catch (error) {
+      throw error
     }
+  }
 }
