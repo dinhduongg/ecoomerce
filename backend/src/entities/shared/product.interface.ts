@@ -13,4 +13,6 @@ export interface Product {
   category: string[]
   is_featured: boolean
   is_new: boolean
+  num_review: number
+  avg_rating: number
 }

@@ -7,6 +7,7 @@ import configuration from './config/configuration'
 import { AuthModule } from './module/auth.module'
 import { UserModule } from './module/user.module'
 import { CategoryModule } from './module/category.module'
+import { ProductModule } from './module/product.module'
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { CategoryModule } from './module/category.module'
     CacheModule.register({ isGlobal: true, ttl: Number.MAX_SAFE_INTEGER }),
     AuthModule,
     UserModule,
-    CategoryModule
+    CategoryModule,
+    ProductModule
   ],
   controllers: [AppController],
   providers: [AppService]
