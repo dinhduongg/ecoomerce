@@ -9,6 +9,7 @@ import { UserModule } from './module/user.module'
 import { CategoryModule } from './module/category.module'
 import { ProductModule } from './module/product.module'
 import { ReviewModule } from './module/review.module'
+import { VoucherModule } from './module/voucher.module'
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { ReviewModule } from './module/review.module'
     UserModule,
     CategoryModule,
     ProductModule,
-    ReviewModule
+    ReviewModule,
+    VoucherModule
   ],
   controllers: [AppController],
   providers: [AppService]
