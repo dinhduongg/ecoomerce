@@ -1,0 +1,36 @@
+/* @import 'normalize.css'; */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+* {
+  @apply select-none;
+}
+
+.gtable {
+  @apply border border-[#ccc];
+}
+
+.gtable > h6 {
+  @apply text-sm font-bold;
+  @apply py-1 bg-neutral-100 dark:bg-neutral-800 bg-opacity-10;
+}
+
+.gtable > div {
+  @apply text-xs;
+  @apply py-1 border-t;
+  @apply flex items-center;
+}
+
+.gtable > p {
+  @apply text-xs;
+  @apply py-1 border-t;
+}
