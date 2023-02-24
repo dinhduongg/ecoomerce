@@ -1,4 +1,5 @@
 import { User } from '@/entities/user.entity'
+import { AuthService } from '@/services/auth.service'
 import { UserMapper } from '@/services/mappers/user.mapper'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
 import { Module } from '@nestjs/common'
@@ -9,7 +10,7 @@ import { UserService } from '../services/user.service'
 @Module({
   imports: [MikroOrmModule.forFeature([User]), JwtModule.register({})],
   controllers: [UserController],
-  providers: [UserService, UserMapper],
+  providers: [AuthService, UserService, UserMapper],
   exports: [UserService]
 })
-export class UserModule {}
+export class UserModule { }

@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -141,6 +141,18 @@ export class AuthService {
       return refreshToken
     } catch (error) {
       throw error
+    }
+  }
+
+  async verifyToken(token: string): Promise<boolean> {
+    try {
+      await this.jwtService.verify(token, {
+        secret: this.config.get<string>('security.authentication.jwt.access')
+      })
+
+      return true
+    } catch (error) {
+      throw new HttpException('accesstoken expried', HttpStatus.GATEWAY_TIMEOUT)
     }
   }
 }
