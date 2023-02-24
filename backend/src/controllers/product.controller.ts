@@ -7,7 +7,7 @@ import { Source } from './support/source.decorator'
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post('create')
   create(@Body() dto: ProductDTO) {
