@@ -7,7 +7,7 @@ import useAuth from '~/hooks/useAuth'
 const PersistLogin: FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { auth, setAuth } = useAuth()
-  const [cookie] = useCookies()
+  const [cookies] = useCookies(['userAuth'])
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
@@ -15,10 +15,10 @@ const PersistLogin: FC = () => {
         // await refresh()
         setAuth((prev: any) => ({
           ...prev,
-          accessToken: cookie.jwt?.accessToken,
-          username: cookie.jwt?.username,
-          fullname: cookie.jwt?.fullname,
-          roles: cookie.jwt?.roles
+          accessToken: cookies.userAuth?.accessToken,
+          username: cookies.userAuth?.username,
+          authorities: cookies.userAuth?.authorities,
+          authority: cookies.userAuth?.authority
         }))
       } catch (error) {
         console.log(error)

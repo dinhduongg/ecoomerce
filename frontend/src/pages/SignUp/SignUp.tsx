@@ -1,13 +1,17 @@
 import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion } from 'framer-motion'
-import { FC } from 'react'
-import { NavLink } from 'react-router-dom'
+import { FC, useMemo } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 
+import { useMutation } from '@tanstack/react-query'
+import usePrivateAxios from '~/hooks/usePrivateAxios'
 import { authForm as IFormInputs } from '~/types/commom'
+import { isAxiosError } from '~/utils/utils'
 
 type formError =
   | {
@@ -15,13 +19,40 @@ type formError =
     }
   | null
 
-const initState: IFormInputs = {
-  username: '',
-  password: '',
-  confirmPassword: ''
-}
-
 const SignUp: FC = () => {
+  const privateAxios = usePrivateAxios()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<IFormInputs>()
+
+  const { mutate, error } = useMutation({
+    mutationFn: (body: IFormInputs) => {
+      return privateAxios.post('/auth/register', body)
+    }
+  })
+
+  const errorForm: formError = useMemo(() => {
+    if (isAxiosError<{ error: formError }>(error) && error.response?.status === 422) {
+      return error.response.data.error
+    }
+    return null
+  }, [error])
+
+  const onSubmit: SubmitHandler<IFormInputs> = (data) => {
+    mutate(data, {
+      onSuccess: (response) => {
+        sessionStorage.setItem('accessToken', JSON.stringify(response.data.accessToken))
+        navigate('/dang-nhap')
+      }
+    })
+  }
+
   return (
     <Helmet title='Đăng ký'>
       <motion.div
@@ -45,36 +76,51 @@ const SignUp: FC = () => {
               </NavLink>
             </div>
             <p className='mb-6'>Chào mừng bạn đến với chúng tôi</p>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className='space-y-4'>
                 <div className='space-y-2'>
                   <div className='relative'>
                     <input
+                      {...register('username', {
+                        required: true
+                      })}
+                      onClick={() => delete errorForm?.username}
                       type='text'
-                      name='username'
                       placeholder='Tên đăng nhập'
                       className='input p-3 outline-none w-full z-20 border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none input active:outline-none rounded-md'
                     />
+                    {errors.username && <span className='text-red-500'>Không được để trống trường này</span>}
+                    {errorForm?.username && <span className='text-red-500'>{errorForm.username}</span>}
                   </div>
                 </div>
                 <div className='space-y-2'>
                   <div className='relative'>
                     <input
+                      {...register('password', {
+                        required: true
+                      })}
+                      onClick={() => delete errorForm?.password}
                       type='password'
-                      name='password'
                       placeholder='Mật khẩu'
                       className='input p-3 outline-none w-full z-20 border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none input active:outline-none rounded-md'
                     />
+                    {errors.password && <span className='text-red-500'>Không được để trống trường này</span>}
+                    {errorForm?.password && <span className='text-red-500'>{errorForm.password}</span>}
                   </div>
                 </div>
                 <div className='space-y-2'>
                   <div className='relative'>
                     <input
+                      {...register('confirmPassword', {
+                        required: true
+                      })}
+                      onClick={() => delete errorForm?.confirmPassword}
                       type='password'
-                      name='confirmPassword'
                       placeholder='Nhập lại mật khẩu'
                       className='input p-3 outline-none w-full z-20 border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none input active:outline-none rounded-md'
                     />
+                    {errors.confirmPassword && <span className='text-red-500'>Không được để trống trường này</span>}
+                    {errorForm?.confirmPassword && <span className='text-red-500'>{errorForm.confirmPassword}</span>}
                   </div>
                 </div>
               </div>

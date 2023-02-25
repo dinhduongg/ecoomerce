@@ -1,12 +1,17 @@
 import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { motion } from 'framer-motion'
-import { FC } from 'react'
-import { NavLink } from 'react-router-dom'
+import { FC, useMemo } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import useAuth from '~/hooks/useAuth'
 
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 import { authForm as aForm } from '~/types/commom'
+import { useMutation } from '@tanstack/react-query'
+import usePrivateAxios from '~/hooks/usePrivateAxios'
+import { isAxiosError } from '~/utils/utils'
 
 type IFormInputs = Omit<aForm, 'confirmPassword'>
 
@@ -16,12 +21,46 @@ type formError =
     }
   | null
 
-const initState: IFormInputs = {
-  username: 'duong',
-  password: '1111'
-}
-
 const SignIn: FC = () => {
+  const privateAxios = usePrivateAxios()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+  const { auth, setAuth } = useAuth()
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<IFormInputs>()
+
+  const { mutate, error } = useMutation({
+    mutationFn: (body: IFormInputs) => {
+      return privateAxios.post('/auth/login', body)
+    }
+  })
+
+  const errorForm: formError = useMemo(() => {
+    if (isAxiosError<{ error: formError }>(error) && error.response?.status === 422) {
+      return error.response.data.error
+    }
+    return null
+  }, [error])
+
+  const onSubmit: SubmitHandler<IFormInputs> = (data) => {
+    mutate(data, {
+      onSuccess: (response) => {
+        sessionStorage.setItem('accessToken', JSON.stringify(response.data.accessToken))
+        setAuth((prev) => ({
+          ...prev,
+          ...response.data
+        }))
+        navigate(from, { replace: true })
+      }
+    })
+  }
+
   return (
     <Helmet title='Đăng nhập'>
       <motion.div
@@ -39,26 +78,38 @@ const SignIn: FC = () => {
               </NavLink>
             </div>
             <p className='mb-6'>Chào mừng bạn đến với chúng tôi</p>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className='space-y-4'>
                 <div className='space-y-2'>
                   <div className='relative'>
                     <input
+                      {...register('username', {
+                        required: true
+                      })}
+                      onClick={() => delete errorForm?.username}
                       type='text'
                       name='username'
                       placeholder='Tên đăng nhập'
-                      className='input p-3 outline-none w-full z-20 border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none input active:outline-none rounded-md'
+                      className='input'
                     />
+                    {errors.username && <span className='text-red-500'>Không được để trống trường này</span>}
+                    {errorForm?.username && <span className='text-red-500'>{errorForm.username}</span>}
                   </div>
                 </div>
                 <div className='space-y-2'>
                   <div className='relative'>
                     <input
+                      {...register('password', {
+                        required: true
+                      })}
+                      onClick={() => delete errorForm?.password}
                       type='password'
                       name='password'
                       placeholder='Mật khẩu'
-                      className='input p-3 outline-none w-full z-20 border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none input active:outline-none rounded-md'
+                      className='input'
                     />
+                    {errors.password && <span className='text-red-500'>Không được để trống trường này</span>}
+                    {errorForm?.password && <span className='text-red-500'>{errorForm.password}</span>}
                   </div>
                 </div>
               </div>

@@ -51,7 +51,7 @@ export class UserService {
   async create(dto: registerData): Promise<UserDTO | any> {
     try {
       if (dto.password !== dto.confirmPassword)
-        throw new HttpException({ error: { password: 'Mật khẩu không khớp' } }, HttpStatus.UNPROCESSABLE_ENTITY)
+        throw new HttpException({ error: { confirmPassword: 'Mật khẩu không khớp' } }, HttpStatus.UNPROCESSABLE_ENTITY)
 
       const checkUser = await this.repository.findOne({ username: dto.username })
       if (checkUser)

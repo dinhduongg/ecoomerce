@@ -34,3 +34,9 @@
   @apply text-xs;
   @apply py-1 border-t;
 }
+
+.input {
+  @apply p-3 outline-none;
+  @apply border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none active:outline-none rounded-md;
+  @apply w-full z-20;
+}

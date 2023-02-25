@@ -6,6 +6,8 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { ProductDTO } from './dto/product.dto'
 import { ProductMapper } from './mappers/product.mapper'
+import { Query } from '@/entities/shared/interface'
+import { whereCond } from './support/dictionary'
 
 @Injectable()
 export class ProductService {
@@ -29,9 +31,11 @@ export class ProductService {
     }
   }
 
-  async findAll(source: string): Promise<ProductDTO[]> {
+  async findAll(source: string, query: Query): Promise<ProductDTO[]> {
     try {
-      const products = await this.repository.find({})
+      const { filters } = query
+
+      const products = await this.repository.find(whereCond(filters))
       return products.map((product) => this.mapper.toDTO(product))
     } catch (error) {
       throw error

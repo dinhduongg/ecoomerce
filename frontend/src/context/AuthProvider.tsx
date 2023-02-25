@@ -12,9 +12,9 @@ interface IAuthContext {
 
 export const authState: authContext = {
   accessToken: '',
-  roles: [],
+  authorities: [],
   username: '',
-  fullname: ''
+  authority: ''
 }
 
 const AuthContext = createContext<IAuthContext>({

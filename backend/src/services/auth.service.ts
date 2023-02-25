@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) { }
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -46,11 +46,11 @@ export class AuthService {
 
       if (currentUser.refreshToken) {
         res.cookie(
-          'refreshToken',
-          { refreshToken: currentUser.refreshToken },
+          'userAuth',
+          { refreshToken: currentUser.refreshToken, accessToken, ...payload },
           {
-            httpOnly: true,
-            secure: false,
+            httpOnly: false,
+            secure: true,
             path: '/',
             sameSite: 'strict'
           }
@@ -60,11 +60,11 @@ export class AuthService {
         currentUser.refreshToken = refreshToken
 
         res.cookie(
-          'refreshToken',
-          { refreshToken: refreshToken },
+          'userAuth',
+          { refreshToken: refreshToken, accessToken, ...payload },
           {
-            httpOnly: true,
-            secure: false,
+            httpOnly: false,
+            secure: true,
             path: '/',
             sameSite: 'strict'
           }
@@ -73,7 +73,7 @@ export class AuthService {
         await this.em.persistAndFlush(currentUser)
       }
 
-      return { accessToken }
+      return { accessToken, ...payload }
     } catch (error) {
       throw error
     }
@@ -85,12 +85,12 @@ export class AuthService {
 
   async logout(request: Request, response: Response) {
     try {
-      const { jwt } = request.cookies
-      if (!jwt) throw new HttpException('Lỗi! không có token', HttpStatus.BAD_GATEWAY)
+      const { userAuth } = request.cookies
+      if (!Boolean(userAuth)) throw new HttpException('Lỗi! không có token', HttpStatus.BAD_GATEWAY)
 
-      response.clearCookie('jwt', {
-        httpOnly: true,
-        secure: false,
+      response.clearCookie('userAuth', {
+        httpOnly: false,
+        secure: true,
         path: '/',
         sameSite: 'strict'
       })
