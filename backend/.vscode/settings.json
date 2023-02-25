@@ -2,5 +2,11 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.bracketPairColorization.enabled": true,
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "on",
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/.backend": true
+  }
 }
