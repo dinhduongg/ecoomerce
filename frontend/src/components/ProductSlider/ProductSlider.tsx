@@ -70,7 +70,10 @@ const ProductSlider: FC<Props> = ({ products }) => {
                   </div>
                 </div>
                 <div className='p-2'>
-                  <NavLink to='/' className='text-text-55 pb-1 duration-200 hover:text-button-hover'>
+                  <NavLink
+                    to={`/san-pham/${product.id}`}
+                    className='text-text-55 pb-1 duration-200 hover:text-button-hover'
+                  >
                     {product.product_name}
                   </NavLink>
                   <div className='space-x-2 text-text-55'>

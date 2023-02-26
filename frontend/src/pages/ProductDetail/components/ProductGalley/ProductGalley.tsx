@@ -5,14 +5,18 @@ import { FC, useRef, useState } from 'react'
 import { Navigation, Thumbs, type Swiper as SwiperRef } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-const images = [
-  'https://preview.colorlib.com/theme/fashe/images/thumb-item-01.jpg',
-  'https://preview.colorlib.com/theme/fashe/images/thumb-item-02.jpg',
-  'https://preview.colorlib.com/theme/fashe/images/thumb-item-03.jpg',
-  'https://preview.colorlib.com/theme/fashe/images/banner-02.jpg.webp'
-]
+// const images = [
+//   'https://preview.colorlib.com/theme/fashe/images/thumb-item-01.jpg',
+//   'https://preview.colorlib.com/theme/fashe/images/thumb-item-02.jpg',
+//   'https://preview.colorlib.com/theme/fashe/images/thumb-item-03.jpg',
+//   'https://preview.colorlib.com/theme/fashe/images/banner-02.jpg.webp'
+// ]
 
-const ProductGalley: FC = () => {
+interface Props {
+  images: string[]
+}
+
+const ProductGalley: FC<Props> = ({ images }) => {
   const swiperRef = useRef<SwiperRef>()
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperRef>()
   const [activeIndex, setActiveIndex] = useState(0)

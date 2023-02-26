@@ -46,9 +46,16 @@ export class ProductService {
         return products.map((product) => this.mapper.toDTO(product))
       }
 
+      if (source.startsWith('/san-pham')) {
+        where['category'] = { $in: [...filters.category] }
+        const products = await this.repository.find(where)
+        console.log(products)
+        return products.map((product) => this.mapper.toDTO(product))
+      }
+
       if (filters.is_featured) where['is_featured'] = filters.is_featured === 'true' ? true : false
       if (filters.is_new) where['is_new'] = filters.is_new === 'true' ? true : false
-      console.log(where)
+
       const products = await this.repository.find(where)
       return products.map((product) => this.mapper.toDTO(product))
     } catch (error) {
