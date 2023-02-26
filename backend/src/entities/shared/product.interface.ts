@@ -8,8 +8,10 @@ export interface Product {
   description: string
   in_warehouse: number
   standard_price: number
+  discounted_price: number
   size: string[]
-  discount: number
+  discount_percent: number
+  discount_price: number
   category: string[]
   is_featured: boolean
   is_new: boolean

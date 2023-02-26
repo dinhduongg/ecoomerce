@@ -12,8 +12,10 @@ export class Product extends SnowflakeBase implements IProduct {
   @Property() description: string
   @Property() in_warehouse: number
   @Property() standard_price: number
+  @Property() discounted_price: number
   @Property() size: string[]
-  @Property() discount: number
+  @Property() discount_percent: number
+  @Property() discount_price: number
   @Property() category: string[]
   @Property() is_featured: boolean
   @Property() is_new: boolean

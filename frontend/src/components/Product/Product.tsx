@@ -31,10 +31,8 @@ const Product: FC<Props> = ({ product }) => {
           {product?.product_name}
         </NavLink>
         <div className='space-x-2 text-text-55'>
-          <span>
-            {vietnameseCurrency(product?.standard_price! - (product?.standard_price! * product?.discount!) / 100)}
-          </span>
-          {product?.discount !== 0 && (
+          <span>{vietnameseCurrency(product?.discounted_price!)}</span>
+          {product?.discounted_price !== product?.standard_price && (
             <span className='line-through text-red-500'>{vietnameseCurrency(product?.standard_price!)}</span>
           )}
         </div>

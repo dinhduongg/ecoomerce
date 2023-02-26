@@ -2,7 +2,7 @@ import { Product } from '@/entities/product.entity'
 import { EntityManager, MongoEntityRepository } from '@mikro-orm/mongodb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { wrap } from '@mikro-orm/core'
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common'
+import { CACHE_MANAGER, Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { ProductDTO } from './dto/product.dto'
 import { ProductMapper } from './mappers/product.mapper'
@@ -23,7 +23,13 @@ export class ProductService {
   async create(dto: ProductDTO) {
     try {
       const product = this.mapper.toEntity(dto)
+      product.discounted_price =
+        product.standard_price - (product.standard_price * product.discount_percent) / 100 - product.discount_price
       this.repository.create(product)
+
+      if (product.discounted_price < 0)
+        throw new HttpException('Bạn đang giảm giá quá sâu! Hãy sửa lại ngay', HttpStatus.BAD_REQUEST)
+
       await this.repository.flush()
       return 'tạo mới sản phẩm thành công'
     } catch (error) {
