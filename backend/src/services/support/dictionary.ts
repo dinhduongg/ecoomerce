@@ -42,12 +42,3 @@ export const generalProductTemplate = Builder(Product)
   .build()
 
 export const generalReviewTemplate = Builder(Review).product_id('').user_id('').rating(0).comment('').build()
-
-export const whereCond = <T>(filters: any) => {
-  const where = {} as any
-  for (const porperty in filters) {
-    where[porperty] = filters[porperty] == 'true' ? true : false
-  }
-
-  return where
-}

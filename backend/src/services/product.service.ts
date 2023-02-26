@@ -7,7 +7,7 @@ import { Cache } from 'cache-manager'
 import { ProductDTO } from './dto/product.dto'
 import { ProductMapper } from './mappers/product.mapper'
 import { Query } from '@/entities/shared/interface'
-import { whereCond } from './support/dictionary'
+import { makeFindOptions, whereCond } from '@/support/ultils'
 
 @Injectable()
 export class ProductService {
@@ -33,9 +33,23 @@ export class ProductService {
 
   async findAll(source: string, query: Query): Promise<ProductDTO[]> {
     try {
-      const { filters } = query
+      const { filters, pageable } = query
+      const where = {}
 
-      const products = await this.repository.find(whereCond(filters))
+      if (source.startsWith('/cua-hang')) {
+        if (filters.from && filters.to) where['standard_price'] = { $gte: +filters.from, $lte: +filters.to }
+        if (filters.category && filters.category !== 'all') {
+          where['category'] = filters.category
+        }
+
+        const products = await this.repository.find(where, makeFindOptions(pageable))
+        return products.map((product) => this.mapper.toDTO(product))
+      }
+
+      if (filters.is_featured) where['is_featured'] = filters.is_featured === 'true' ? true : false
+      if (filters.is_new) where['is_new'] = filters.is_new === 'true' ? true : false
+      console.log(where)
+      const products = await this.repository.find(where)
       return products.map((product) => this.mapper.toDTO(product))
     } catch (error) {
       throw error

@@ -13,11 +13,11 @@ interface Props {
 
 const initQuery: IQuery = {
   filters: {
-    type: 'all'
+    category: 'all'
   },
   pageable: {
     page: 0,
-    maxPage: 10,
+    maxPage: 20,
     sort: {
       field: 'createdAt',
       order: 'd'
@@ -34,9 +34,9 @@ const categories = [
 ]
 
 const options = [
-  { key: 'createdAt', order: 'a', value: 'Mới nhất' },
-  { key: 'price', order: 'a', value: 'Giá: Thấp đến cao' },
-  { key: 'price', order: 'd', value: 'Giá: Cao đến thấp' }
+  { key: 'createdAt ', order: 'a', value: 'Mới nhất' },
+  { key: 'standard_price', order: 'a', value: 'Giá: Thấp đến cao' },
+  { key: 'standard_price', order: 'd', value: 'Giá: Cao đến thấp' }
 ]
 
 const prices = [
@@ -51,7 +51,10 @@ const ProductLayout: FC<Props> = ({ children }) => {
   const location = useLocation()
 
   const sortByPrice = (v: string) => {
-    if (v === 'DEFAULT') return
+    if (v === 'DEFAULT') {
+      delete query.filters.from
+      delete query.filters.to
+    }
     const price = prices[+v]
     setQuery((prev) => ({
       ...prev,
@@ -112,7 +115,7 @@ const ProductLayout: FC<Props> = ({ children }) => {
                   return (
                     <li
                       className={classNames('cursor-pointer pt-1', {
-                        'text-red-500': query.filters.type === category.key
+                        'text-red-500': query.filters.category === category.key
                       })}
                       key={index}
                       onClick={() =>
@@ -120,7 +123,7 @@ const ProductLayout: FC<Props> = ({ children }) => {
                           ...prev,
                           filters: {
                             ...prev.filters,
-                            type: category.key
+                            category: category.key
                           }
                         }))
                       }
