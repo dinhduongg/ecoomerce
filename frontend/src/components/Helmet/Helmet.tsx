@@ -12,7 +12,7 @@ const Helmet: FC<Props> = ({ title, children }) => {
   const [st, setSt] = useState<number>(0)
 
   useEffect(() => {
-    document.title = 'Watch - ' + title
+    document.title = 'Fashion - ' + title
     window.scrollTo({
       top: 0,
       left: 0,
