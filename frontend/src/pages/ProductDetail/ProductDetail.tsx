@@ -1,19 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
-import { FC, useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import classNames from 'classnames'
+import { FC, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+import productApi from '~/api/product.api'
 import Button from '~/components/Button'
+import Helmet from '~/components/Helmet'
 import ProductSlider from '~/components/ProductSlider'
+import { Query } from '~/shared/interface'
+import { Product } from '~/shared/product.interface'
+import { vietnameseCurrency } from '~/utils/utils'
 import ProductGalley from './components/ProductGalley'
 import UserReview from './components/UserReview'
-import usePublicAxios from '~/hooks/usePublicAxios'
-import { Product } from '~/shared/product.interface'
-import queryString from 'query-string'
-import { vietnameseCurrency } from '~/utils/utils'
-import classNames from 'classnames'
-import { Query } from '~/shared/interface'
-import Helmet from '~/components/Helmet'
-import { publicAxios } from '~/utils/axiosClient'
-import productApi from '~/api/product.api'
 
 const ship = [
   'http://mauweb.monamedia.net/donghohaitrieu/wp-content/uploads/2018/10/logo-ghn.jpg',
