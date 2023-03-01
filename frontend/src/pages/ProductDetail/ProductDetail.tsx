@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { FC, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import Button from '~/components/Button'
 import ProductSlider from '~/components/ProductSlider'
 import ProductGalley from './components/ProductGalley'
@@ -40,6 +40,7 @@ const ProductDetail: FC = () => {
 
   const { id } = useParams()
   const publicAxios = usePublicAxios()
+  const { pathname } = useLocation()
 
   const { isLoading } = useQuery({
     queryKey: ['product', id],

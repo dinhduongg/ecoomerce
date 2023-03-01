@@ -1,15 +1,15 @@
-import { AnimatePresence } from 'framer-motion'
-import { FC, Fragment } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion';
+import { FC, Fragment } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
-import { publicRoutes, privateUserRoutes, adminRoute } from '~/routes'
-import { DefaultLayout } from '../Layout'
-import RequireAuth from '~/components/RequireAuth'
+import { publicRoutes, privateUserRoutes, adminRoute } from '~/routes';
+import { DefaultLayout } from '../Layout';
+import RequireAuth from '~/components/RequireAuth';
 // import { AuthorityRole } from '~/shared/enums'
-import PersistLogin from '~/components/PersistLogin'
+import PersistLogin from '~/components/PersistLogin';
 
 const AnimationRoutes: FC = () => {
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <AnimatePresence>
@@ -17,13 +17,13 @@ const AnimationRoutes: FC = () => {
         {/* public route */}
         <Route element={<PersistLogin />}>
           {publicRoutes.map((route, index) => {
-            const Page = route.component
-            let Layout = DefaultLayout
+            const Page = route.component;
+            let Layout = DefaultLayout;
 
             if (route.layout) {
-              Layout = route.layout
+              Layout = route.layout;
             } else if (route.layout === null) {
-              Layout = Fragment
+              Layout = Fragment;
             }
 
             return (
@@ -32,11 +32,11 @@ const AnimationRoutes: FC = () => {
                 path={route.path}
                 element={
                   <Layout>
-                    <Page />
+                    <Page path={route.path} />
                   </Layout>
                 }
               />
-            )
+            );
           })}
         </Route>
 
@@ -98,7 +98,7 @@ const AnimationRoutes: FC = () => {
         </Route> */}
       </Routes>
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default AnimationRoutes
+export default AnimationRoutes;

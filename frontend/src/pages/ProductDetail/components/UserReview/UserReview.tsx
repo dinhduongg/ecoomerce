@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FC, SetStateAction, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import queryString from 'query-string'
 import Button from '~/components/Button'
@@ -22,6 +22,7 @@ const UserReview: FC = () => {
   const privateAxios = usePrivateAxios()
 
   const { id } = useParams()
+  const { pathname } = useLocation()
   const { auth } = useAuth()
 
   const { data, refetch } = useQuery({

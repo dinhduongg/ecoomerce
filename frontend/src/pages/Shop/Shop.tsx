@@ -1,20 +1,24 @@
 import { useQuery } from '@tanstack/react-query'
 import { FC, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Helmet from '~/components/Helmet'
 import Product from '~/components/Product'
-import { Query as IQuery } from '~/shared/interface'
-import usePrivateAxios from '~/hooks/usePrivateAxios'
 import usePublicAxios from '~/hooks/usePublicAxios'
+import { Query as IQuery } from '~/shared/interface'
 
 interface Props {
   query: IQuery
 }
 
 const Shop: FC<Props> = ({ query }) => {
-  const privateAxios = usePrivateAxios()
   const publicAxios = usePublicAxios()
+  const { pathname } = useLocation()
 
-  const { data: products, refetch } = useQuery({
+  const {
+    data: products,
+    refetch,
+    isLoading
+  } = useQuery({
     queryKey: ['products', query.filters.mainSide],
     queryFn: () => publicAxios.get('/product', { params: query })
   })
@@ -22,6 +26,10 @@ const Shop: FC<Props> = ({ query }) => {
   useEffect(() => {
     refetch()
   }, [query])
+
+  if (isLoading) {
+    return <>loading ...</>
+  }
 
   return (
     <Helmet title='Shop'>
