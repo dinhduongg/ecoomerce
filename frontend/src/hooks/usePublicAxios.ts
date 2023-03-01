@@ -1,4 +1,3 @@
-import { AxiosHeaders } from 'axios'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { publicAxios } from '~/utils/axiosClient'
@@ -9,7 +8,8 @@ const usePublicAxios = () => {
   useEffect(() => {
     const requestIntercept = publicAxios.interceptors.request.use(
       (config) => {
-        config.headers.source = pathname
+        delete config.headers['source']
+        config.headers['source'] = pathname
         return config
       },
       (error) => {

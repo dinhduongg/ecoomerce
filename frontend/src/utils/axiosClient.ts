@@ -7,13 +7,32 @@ export const publicAxios = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  params: (params: Record<string, any>) => {
-    return queryString.stringify(params)
-  }
-  // paramsSerializer: {
-  //     serialize: (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
-  // },
+  params: (params: Record<string, any>) => queryString.stringify(params),
 })
+
+publicAxios.interceptors.request.use(
+  config => {
+    if (config.headers['source']) delete config.headers['source']
+    config.headers['source'] = window.location.pathname
+
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
+publicAxios.interceptors.response.use(
+  response => {
+    if (response.data) {
+      return response.data
+    }
+    return response
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 // private axiosClient
 export const privateAxios = axios.create({
@@ -24,6 +43,6 @@ export const privateAxios = axios.create({
     'Content-Type': 'application/json'
   },
   paramsSerializer: {
-    encode: (params) => queryString.stringify(params)
+    serialize: (params) => queryString.stringify(params)
   }
 })

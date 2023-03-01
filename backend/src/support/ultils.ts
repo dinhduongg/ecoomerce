@@ -21,7 +21,7 @@ export const makeFindOptions = <T>(pageable: Pageable): FindOptions<T> => {
   let orderBy = Builder<QueryOrderMap<T>>().build()
   if (pageable?.sort) {
     const arr = Object.values(pageable?.sort)
-    orderBy[arr[0]] = arr[1] == 'a' ? 1 : -1
+    orderBy[arr[0]] = arr[1] === 'a' ? 1 : -1
   }
   return Builder<FindOptions<T>>()
     .limit(+pageable.maxPage ?? 20)

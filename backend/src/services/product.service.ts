@@ -18,7 +18,7 @@ export class ProductService {
     protected readonly mapper: ProductMapper,
     @Inject(CACHE_MANAGER)
     protected readonly _cache: Cache
-  ) {}
+  ) { }
 
   async create(dto: ProductDTO) {
     try {
@@ -41,7 +41,6 @@ export class ProductService {
     try {
       const { filters, pageable } = query
       const where = {}
-      console.log(source)
 
       if (source.startsWith('/cua-hang')) {
         if (filters.from && filters.to) where['standard_price'] = { $gte: +filters.from, $lte: +filters.to }
@@ -56,13 +55,16 @@ export class ProductService {
       if (source.startsWith('/san-pham')) {
         where['category'] = { $in: [...filters.category] }
         const products = await this.repository.find(where)
-        console.log(products)
         return products.map((product) => this.mapper.toDTO(product))
       }
 
       if (source.startsWith('/giam-gia')) {
         where['$or'] = [{ discount_percent: { $ne: 0 } }, { discount_price: { $ne: 0 } }]
-        console.log(where)
+        if (filters.from && filters.to) where['standard_price'] = { $gte: +filters.from, $lte: +filters.to }
+        if (filters.category && filters.category !== 'all') {
+          where['category'] = filters.category
+        }
+
         const products = await this.repository.find(where)
         return products.map((product) => this.mapper.toDTO(product))
       }

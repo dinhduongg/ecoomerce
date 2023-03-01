@@ -27,12 +27,7 @@ const UserReview: FC = () => {
 
   const { data, refetch } = useQuery({
     queryKey: ['review', id],
-    queryFn: () =>
-      publicAxios.get(`/review/get/${id}`, {
-        paramsSerializer: {
-          serialize: (params) => queryString.stringify(params)
-        }
-      }),
+    queryFn: () => publicAxios.get(`/review/get/${id}`),
     staleTime: 60 * 1000,
     enabled: id !== undefined
   })

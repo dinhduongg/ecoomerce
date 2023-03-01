@@ -12,6 +12,8 @@ import { vietnameseCurrency } from '~/utils/utils'
 import classNames from 'classnames'
 import { Query } from '~/shared/interface'
 import Helmet from '~/components/Helmet'
+import { publicAxios } from '~/utils/axiosClient'
+import productApi from '~/api/product.api'
 
 const ship = [
   'http://mauweb.monamedia.net/donghohaitrieu/wp-content/uploads/2018/10/logo-ghn.jpg',
@@ -32,31 +34,24 @@ const payment = [
 ]
 
 const ProductDetail: FC = () => {
-  const [quantity, setQuantity] = useState(0)
+  const [quantity, setQuantity] = useState(1)
   const [isDesc, setIsDesc] = useState(true)
   const [query, setQuery] = useState<Query>()
   const [product, setProduct] = useState<Product>()
   const [products, setProducts] = useState<Product[]>([])
 
   const { id } = useParams()
-  const publicAxios = usePublicAxios()
-  const { pathname } = useLocation()
 
   const { isLoading } = useQuery({
     queryKey: ['product', id],
-    queryFn: () =>
-      publicAxios.get(`/product/${id}`, {
-        paramsSerializer: {
-          serialize: (params) => queryString.stringify(params)
-        }
-      }),
+    queryFn: () => productApi.getOne(id!),
     enabled: id != undefined,
-    onSuccess: (response) => {
-      setProduct(response.data)
+    onSuccess: (response: Product) => {
+      setProduct(response)
       setQuery((prev) => ({
         ...prev,
         filters: {
-          category: response.data.category
+          category: response.category
         }
       }))
     }
@@ -64,16 +59,17 @@ const ProductDetail: FC = () => {
 
   useQuery({
     queryKey: ['related-product'],
-    queryFn: () =>
-      publicAxios.get('/product', {
-        params: query
-      }),
+    queryFn: () => productApi.getAll(query as Query),
     enabled: query?.filters != undefined,
-    onSuccess: (response) => {
+    onSuccess: (response: Product[]) => {
       console.log(response)
-      setProducts(response.data)
+      setProducts(response)
     }
   })
+
+  if (isLoading) {
+    return <>is Loading ...</>
+  }
 
   return (
     <Helmet title='Chi tiết sản phẩm'>
@@ -177,7 +173,7 @@ const ProductDetail: FC = () => {
         {products?.length !== 0 && (
           <div className='py-8 px-4 lg:px-0'>
             <h2 className='text-2xl font-bold'>Sản phẩm tương tự</h2>
-            <ProductSlider products={products ?? []} />
+            <ProductSlider products={products} />
           </div>
         )}
       </section>

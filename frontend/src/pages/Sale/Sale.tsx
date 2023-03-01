@@ -1,32 +1,36 @@
 import { useQuery } from '@tanstack/react-query'
-import { FC, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { FC, useEffect, useState } from 'react'
+import productApi from '~/api/product.api'
 import Helmet from '~/components/Helmet'
 import Product from '~/components/Product'
 
-import usePublicAxios from '~/hooks/usePublicAxios'
+import { Query } from '~/shared/interface'
 import { Product as IProduct } from '~/shared/product.interface'
 
-const Sale: FC = () => {
-  const [products, setProducts] = useState<IProduct[]>([])
-  const publicAxios = usePublicAxios()
-  const { pathname } = useLocation()
+interface Props {
+  query: Query
+}
 
-  useQuery({
-    queryKey: ['product_sale'],
-    queryFn: () => publicAxios.get('/product'),
-    onSuccess: (response) => {
-      setProducts(response.data)
+const Sale: FC<Props> = ({ query }) => {
+  const [products, setProducts] = useState<IProduct[]>([])
+
+  const { refetch } = useQuery({
+    queryKey: ['products-sale'],
+    queryFn: () => productApi.getAll(query),
+    onSuccess: (response: IProduct[]) => {
+      setProducts(response)
     }
   })
 
-  console.log(products)
+  useEffect(() => {
+    refetch()
+  }, [query])
 
   return (
     <Helmet title='Giảm giá'>
       <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-7'>
-        {[1, 2, 3, 3, 434, 3, 43, 4, 3].map((product, index) => {
-          return <Product key={index} />
+        {products.map((product, index) => {
+          return <Product product={product} key={index} />
         })}
       </div>
     </Helmet>

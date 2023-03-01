@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import { LapHeader, MobileHeader } from '../components/Header'
 import { Pageable, Query as IQuery } from '~/shared/interface'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
+import { vietnameseCurrency } from '~/utils/utils'
 
 interface Props {
   children: React.ReactNode | any
@@ -20,7 +21,7 @@ const initQuery: IQuery = {
     maxPage: 20,
     sort: {
       field: 'createdAt',
-      order: 'd'
+      order: 'a'
     }
   }
 }
@@ -34,9 +35,9 @@ const categories = [
 ]
 
 const options = [
-  { key: 'createdAt ', order: 'a', value: 'Mới nhất' },
-  { key: 'standard_price', order: 'a', value: 'Giá: Thấp đến cao' },
-  { key: 'standard_price', order: 'd', value: 'Giá: Cao đến thấp' }
+  { key: 'createdAt', order: 'd', value: 'Mới nhất' },
+  { key: 'discounted_price', order: 'a', value: 'Giá: Thấp đến cao' },
+  { key: 'discounted_price', order: 'd', value: 'Giá: Cao đến thấp' }
 ]
 
 const prices = [
@@ -66,7 +67,13 @@ const ProductLayout: FC<Props> = ({ children }) => {
   }
 
   const sortByOption = (v: string) => {
-    if (v === 'DEFAULT') return
+    if (v === 'DEFAULT') {
+      setQuery((prev) => ({
+        ...prev,
+        ...initQuery
+      }))
+      return
+    }
     const option = options[+v]
     setQuery((prev) => ({
       ...prev,
@@ -159,7 +166,7 @@ const ProductLayout: FC<Props> = ({ children }) => {
                   {prices.map((price, index) => {
                     return (
                       <option key={index} value={index}>
-                        {price.from} - {price.to}
+                        {vietnameseCurrency(price.from)} - {vietnameseCurrency(price.to)}
                       </option>
                     )
                   })}
