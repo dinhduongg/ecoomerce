@@ -60,7 +60,6 @@ const ProductDetail: FC = () => {
     queryFn: () => productApi.getAll(query as Query),
     enabled: query?.filters != undefined,
     onSuccess: (response: Product[]) => {
-      console.log(response)
       setProducts(response)
     }
   })

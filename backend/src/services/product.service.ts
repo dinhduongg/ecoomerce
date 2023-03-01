@@ -43,7 +43,7 @@ export class ProductService {
       const where = {}
 
       if (source.startsWith('/cua-hang')) {
-        if (filters.from && filters.to) where['standard_price'] = { $gte: +filters.from, $lte: +filters.to }
+        if (filters.from && filters.to) where['discounted_price'] = { $gte: +filters.from, $lte: +filters.to }
         if (filters.category && filters.category !== 'all') {
           where['category'] = filters.category
         }
@@ -60,7 +60,7 @@ export class ProductService {
 
       if (source.startsWith('/giam-gia')) {
         where['$or'] = [{ discount_percent: { $ne: 0 } }, { discount_price: { $ne: 0 } }]
-        if (filters.from && filters.to) where['standard_price'] = { $gte: +filters.from, $lte: +filters.to }
+        if (filters.from && filters.to) where['discounted_price'] = { $gte: +filters.from, $lte: +filters.to }
         if (filters.category && filters.category !== 'all') {
           where['category'] = filters.category
         }
