@@ -11,10 +11,11 @@ interface IAuthContext {
 }
 
 export const authState: authContext = {
-  accessToken: '',
+  // accessToken: '',
   authorities: [],
   username: '',
-  authority: ''
+  authority: '',
+  isAuthenticated: false
 }
 
 const AuthContext = createContext<IAuthContext>({

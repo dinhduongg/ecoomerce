@@ -15,7 +15,7 @@ const PersistLogin: FC = () => {
         // await refresh()
         setAuth((prev: any) => ({
           ...prev,
-          accessToken: cookies.userAuth?.accessToken,
+          isAuthenticated: cookies.userAuth.authenticated,
           username: cookies.userAuth?.username,
           authorities: cookies.userAuth?.authorities,
           authority: cookies.userAuth?.authority
@@ -27,7 +27,7 @@ const PersistLogin: FC = () => {
       }
     }
 
-    !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false)
+    !auth?.isAuthenticated ? verifyRefreshToken() : setIsLoading(false)
   }, [])
 
   // useEffect(() => {

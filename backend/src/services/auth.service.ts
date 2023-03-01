@@ -44,36 +44,24 @@ export class AuthService {
       const currentUser = await this.em.findOne(User, { username: user.username })
       const accessToken = await this.generateAccessToken(payload)
 
-      if (currentUser.refreshToken) {
-        res.cookie(
-          'userAuth',
-          { refreshToken: currentUser.refreshToken, accessToken, ...payload },
-          {
-            httpOnly: false,
-            secure: true,
-            path: '/',
-            sameSite: 'strict'
-          }
-        )
-      } else {
+      if (!currentUser.refreshToken) {
         const refreshToken = await this.generateRefreshToken(payload)
         currentUser.refreshToken = refreshToken
-
-        res.cookie(
-          'userAuth',
-          { refreshToken: refreshToken, accessToken, ...payload },
-          {
-            httpOnly: false,
-            secure: true,
-            path: '/',
-            sameSite: 'strict'
-          }
-        )
-
-        await this.em.persistAndFlush(currentUser)
       }
 
-      return { accessToken, ...payload }
+      res.cookie(
+        'userAuth',
+        { isAuthenticated: true, ...payload },
+        {
+          httpOnly: false,
+          secure: true,
+          path: '/',
+          sameSite: 'strict'
+        }
+      )
+
+      await this.em.persistAndFlush(currentUser)
+      return { accessToken, isAuthenticated: true, ...payload }
     } catch (error) {
       throw error
     }
@@ -146,11 +134,11 @@ export class AuthService {
 
   async verifyToken(token: string): Promise<boolean> {
     try {
-      await this.jwtService.verify(token, {
+      const decode = await this.jwtService.verify(token, {
         secret: this.config.get<string>('security.authentication.jwt.access')
       })
 
-      return true
+      return decode
     } catch (error) {
       throw new HttpException('accesstoken expried', HttpStatus.FORBIDDEN)
     }
