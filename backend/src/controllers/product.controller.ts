@@ -1,10 +1,7 @@
-import { JwtAuthGuard, Roles, RolesGuard } from '@/authentication'
-import { AuthorityRole } from '@/entities/shared/enum'
 import { Query as IQuery } from '@/entities/shared/interface'
 import { ProductDTO } from '@/services/dto/product.dto'
-import { Body, Controller, Delete, Get, Param, Patch, UseGuards, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { Query } from '@nestjs/common/decorators'
-import { query } from 'express'
 import { ProductService } from '../services/product.service'
 import { Source } from './support/source.decorator'
 

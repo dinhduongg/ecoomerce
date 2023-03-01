@@ -13,7 +13,7 @@ const Banner: FC = () => {
               alt='IMG_BANNER'
             />
             <div className='w-2/5 shadow-lg absolute right-2/4 translate-x-2/4 bottom-5'>
-              <Button primary full to='/' custom='bg-white text-button-primary hover:text-white'>
+              <Button primary full to='/' custom='bg-white !text-button-primary hover:text-white'>
                 Dresses
               </Button>
             </div>
@@ -25,7 +25,7 @@ const Banner: FC = () => {
               alt='IMG_BANNER'
             />
             <div className='w-2/5 shadow-lg absolute right-2/4 translate-x-2/4 bottom-5'>
-              <Button primary full to='/' custom='bg-white text-button-primary hover:text-white'>
+              <Button primary full to='/' custom='bg-white !text-button-primary hover:text-white'>
                 Sunglasses
               </Button>
             </div>
@@ -39,7 +39,7 @@ const Banner: FC = () => {
               alt='IMG_BANNER'
             />
             <div className='w-2/5 shadow-lg absolute right-2/4 translate-x-2/4 bottom-5'>
-              <Button primary full to='/' custom='bg-white text-button-primary hover:text-white'>
+              <Button primary full to='/' custom='bg-white !text-button-primary hover:text-white'>
                 Watches
               </Button>
             </div>
@@ -51,7 +51,7 @@ const Banner: FC = () => {
               alt='IMG_BANNER'
             />
             <div className='w-2/5 shadow-lg absolute right-2/4 translate-x-2/4 bottom-5'>
-              <Button primary full to='/' custom='bg-white text-button-primary hover:text-white'>
+              <Button primary full to='/' custom='bg-white !text-button-primary hover:text-white'>
                 Footerwear
               </Button>
             </div>
@@ -65,7 +65,7 @@ const Banner: FC = () => {
               alt='IMG_BANNER'
             />
             <div className='w-2/5 shadow-lg absolute right-2/4 translate-x-2/4 bottom-5'>
-              <Button primary full to='/' custom='bg-white text-button-primary hover:text-white'>
+              <Button primary full to='/' custom='bg-white !text-button-primary hover:text-white'>
                 Bags
               </Button>
             </div>

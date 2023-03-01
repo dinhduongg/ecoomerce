@@ -1,16 +1,16 @@
 import { faFacebookF, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { FC, useMemo } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import useAuth from '~/hooks/useAuth'
 
+import authApi from '~/api/auth.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
+import useAuth from '~/hooks/useAuth'
 import { authForm as aForm } from '~/types/commom'
-import { useMutation } from '@tanstack/react-query'
-import usePrivateAxios from '~/hooks/usePrivateAxios'
 import { isAxiosError } from '~/utils/utils'
 
 type IFormInputs = Omit<aForm, 'confirmPassword'>
@@ -22,7 +22,6 @@ type formError =
   | null
 
 const SignIn: FC = () => {
-  const privateAxios = usePrivateAxios()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
@@ -37,7 +36,7 @@ const SignIn: FC = () => {
 
   const { mutate, error } = useMutation({
     mutationFn: (body: IFormInputs) => {
-      return privateAxios.post('/auth/login', body)
+      return authApi.signIn(body)
     }
   })
 
@@ -51,7 +50,7 @@ const SignIn: FC = () => {
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
     mutate(data, {
       onSuccess: (response) => {
-        sessionStorage.setItem('accessToken', JSON.stringify(response.data.accessToken))
+        localStorage.setItem('accessToken', response.data.accessToken)
         setAuth((prev) => ({
           ...prev,
           ...response.data

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import queryString from 'query-string'
+import authApi from '~/api/auth.api'
 
 // public axiosClient
 export const publicAxios = axios.create({
@@ -7,29 +8,29 @@ export const publicAxios = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  params: (params: Record<string, any>) => queryString.stringify(params),
+  params: (params: Record<string, any>) => queryString.stringify(params)
 })
 
 publicAxios.interceptors.request.use(
-  config => {
+  (config) => {
     if (config.headers['source']) delete config.headers['source']
     config.headers['source'] = window.location.pathname
 
     return config
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
 
 publicAxios.interceptors.response.use(
-  response => {
+  (response) => {
     if (response.data) {
       return response.data
     }
     return response
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
@@ -46,3 +47,36 @@ export const privateAxios = axios.create({
     serialize: (params) => queryString.stringify(params)
   }
 })
+
+privateAxios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken')
+
+    if (config.headers['source']) delete config.headers['source']
+
+    config.headers['source'] = window.location.pathname
+    config.headers['Authorization'] = `Bearer ${accessToken}`
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+privateAxios.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  async (error) => {
+    const prevRequest = error?.config
+    if (error?.response?.status === 403 && !prevRequest.sent) {
+      const accessToken = await authApi.refreshAccessToken()
+      localStorage.setItem('accessToken', accessToken.data.accessToken)
+      prevRequest.sent = true
+      prevRequest.headers['Authorization'] = `Bearer ${accessToken.data.accessToken}`
+      return prevRequest
+    }
+    return Promise.reject(error)
+  }
+)

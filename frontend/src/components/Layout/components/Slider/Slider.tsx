@@ -103,7 +103,11 @@ const Slider: FC = () => {
                         [`${slide.buttonAnimate} !visible`]: isActive
                       })}
                     >
-                      <Button to='/' primary rounded custom='block bg-white !text-black px-8 py-3 !hover:text-white '>
+                      <Button
+                        to='/'
+                        primary
+                        custom='!rounded-full block bg-white !text-black px-8 py-3 !hover:text-white '
+                      >
                         Shop now
                       </Button>
                     </div>

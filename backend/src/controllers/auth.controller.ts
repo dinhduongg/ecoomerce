@@ -1,4 +1,5 @@
 import { LocalAuthGuard } from '@/authentication/guards/local-auth.guard'
+import { User } from '@/entities/shared/account.interface'
 import { registerData } from '@/entities/shared/auth.interface'
 import { AuthService } from '@/services/auth.service'
 import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common'
@@ -26,7 +27,7 @@ export class AuthController {
   }
 
   @Get('refresh')
-  refresh(@Body() dto: any) {
-    return this.authService.refresh(dto)
+  refresh(@Req() req: Request) {
+    return this.authService.refresh(req)
   }
 }

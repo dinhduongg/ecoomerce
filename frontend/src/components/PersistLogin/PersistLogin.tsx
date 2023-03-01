@@ -15,7 +15,7 @@ const PersistLogin: FC = () => {
         // await refresh()
         setAuth((prev: any) => ({
           ...prev,
-          isAuthenticated: cookies.userAuth.authenticated,
+          isAuthenticated: cookies.userAuth?.isAuthenticated,
           username: cookies.userAuth?.username,
           authorities: cookies.userAuth?.authorities,
           authority: cookies.userAuth?.authority

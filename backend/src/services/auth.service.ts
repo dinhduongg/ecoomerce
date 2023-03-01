@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) { }
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -49,12 +49,18 @@ export class AuthService {
         currentUser.refreshToken = refreshToken
       }
 
+      const isTokenExpired = this.checkExpToken(currentUser.refreshToken)
+      if (isTokenExpired) {
+        const refreshToken = await this.generateRefreshToken(payload)
+        currentUser.refreshToken = refreshToken
+      }
+
       res.cookie(
         'userAuth',
-        { isAuthenticated: true, ...payload },
+        { isAuthenticated: true, refreshToken: currentUser.refreshToken, ...payload },
         {
-          httpOnly: false,
-          secure: true,
+          httpOnly: true,
+          secure: false,
           path: '/',
           sameSite: 'strict'
         }
@@ -89,18 +95,20 @@ export class AuthService {
     }
   }
 
-  async refresh(dto) {
+  async refresh(req: Request) {
     try {
-      const payload = this.jwtService.verify(dto.refreshToken, {
+      const refreshToken = req.cookies.userAuth.refreshToken
+
+      const payload = this.jwtService.verify(refreshToken, {
         secret: this.config.get<string>('security.authentication.jwt.refresh')
       })
 
-      const token = await this.generateAccessToken({
+      const accessToken = await this.generateAccessToken({
         username: payload.username,
         authorities: payload.authorities,
         authority: payload.authority
       })
-      return { token }
+      return { accessToken }
     } catch (error) {
       throw new HttpException('Refresh token hết hạn', HttpStatus.NOT_IMPLEMENTED)
     }
@@ -142,5 +150,17 @@ export class AuthService {
     } catch (error) {
       throw new HttpException('accesstoken expried', HttpStatus.FORBIDDEN)
     }
+  }
+
+  private async checkExpToken(token: string) {
+    const date = new Date()
+    const decodedToken: any = this.jwtService.decode(token)
+
+    if (decodedToken.exp < date.getTime() / 1000) {
+      // expired
+      return true
+    }
+
+    return false
   }
 }
