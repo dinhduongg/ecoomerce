@@ -13,7 +13,7 @@ const Comment: FC<Props> = ({ review, handleData }) => {
   return (
     <div key={review.id}>
       <div className='flex items-baseline space-x-2'>
-        <h3 className='text-xl text-[#1c1c1c] font-bold'>{review.id}</h3>
+        <h3 className='text-xl text-[#1c1c1c] font-bold'>{review.user_id}</h3>
         {auth?.username === review.user_id && (
           <span className='cursor-pointer hover:underline hover:text-primary' onClick={() => handleData(review)}>
             Chỉnh sửa

@@ -17,7 +17,7 @@ const Sale: FC<Props> = ({ query }) => {
   const { refetch } = useQuery({
     queryKey: ['products-sale'],
     queryFn: () => productApi.getAll(query),
-    onSuccess: (response: IProduct[]) => {
+    onSuccess: (response) => {
       setProducts(response)
     }
   })

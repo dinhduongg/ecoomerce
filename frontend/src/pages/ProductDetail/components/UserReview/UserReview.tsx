@@ -10,22 +10,17 @@ import { Review as IReview } from '~/shared/review.interface'
 import Comment from '../Comment'
 
 const UserReview: FC = () => {
-  const [reviews, setReviews] = useState<IReview[]>([])
-  const [reviewId, setReviewId] = useState('')
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   const [type, setType] = useState('add')
 
   const { id } = useParams()
 
-  const { refetch } = useQuery({
+  const { data: reviews, refetch } = useQuery({
     queryKey: ['product_review', id],
     queryFn: () => reviewApi.getProductReview(id!, {}),
     staleTime: 60 * 1000,
-    enabled: id !== undefined,
-    onSuccess: (response: IReview[]) => {
-      setReviews(response)
-    }
+    enabled: id !== undefined
   })
 
   const { mutate: addReview } = useMutation({
@@ -67,7 +62,6 @@ const UserReview: FC = () => {
           onSuccess: () => {
             setRating(0)
             setComment('')
-            setReviewId('')
             setType('add')
             refetch()
             toast.success('Cập nhật bình luận thành công')
@@ -86,7 +80,6 @@ const UserReview: FC = () => {
     if (data) {
       setRating(data.rating)
       setComment(data.comment)
-      setReviewId(data.id)
       setType('update')
     }
     return
