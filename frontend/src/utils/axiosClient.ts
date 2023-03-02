@@ -52,10 +52,11 @@ privateAxios.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('accessToken')
 
-    if (config.headers['source']) delete config.headers['source']
+    delete config.headers['source']
+    delete config.headers['Authorization']
 
     config.headers['source'] = window.location.pathname
-    config.headers['Authorization'] = `Bearer ${accessToken}`
+    if (accessToken) config.headers['Authorization'] = `Bearer ${accessToken}`
 
     return config
   },
@@ -75,7 +76,7 @@ privateAxios.interceptors.response.use(
       localStorage.setItem('accessToken', accessToken.data.accessToken)
       prevRequest.sent = true
       prevRequest.headers['Authorization'] = `Bearer ${accessToken.data.accessToken}`
-      return prevRequest
+      return privateAxios(prevRequest)
     }
     return Promise.reject(error)
   }

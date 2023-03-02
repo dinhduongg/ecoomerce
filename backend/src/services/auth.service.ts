@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -59,10 +59,10 @@ export class AuthService {
         'userAuth',
         { isAuthenticated: true, refreshToken: currentUser.refreshToken, ...payload },
         {
-          httpOnly: true,
-          secure: false,
-          path: '/',
-          sameSite: 'strict'
+          httpOnly: false,
+          secure: true,
+          path: "/",
+          sameSite: "none",
         }
       )
 
@@ -85,8 +85,8 @@ export class AuthService {
       response.clearCookie('userAuth', {
         httpOnly: false,
         secure: true,
-        path: '/',
-        sameSite: 'strict'
+        path: "/",
+        sameSite: "none",
       })
 
       throw new HttpException('Đăng xuất thành công', HttpStatus.ACCEPTED)

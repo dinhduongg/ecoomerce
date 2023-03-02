@@ -1,52 +1,44 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { FC, SetStateAction, useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { FC, SetStateAction, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-import queryString from 'query-string'
+import { toast } from 'react-toastify'
+import reviewApi from '~/api/review.api'
 import Button from '~/components/Button'
 import Rating from '~/pages/ProductDetail/components/Rating'
-import useAuth from '~/hooks/useAuth'
 import { Review as IReview } from '~/shared/review.interface'
-import { publicAxios } from '~/utils/axiosClient'
 import Comment from '../Comment'
-import usePrivateAxios from '~/hooks/usePrivateAxios'
-import { toast } from 'react-toastify'
 
 const UserReview: FC = () => {
-  const [reviews, setReviews] = useState<IReview[]>()
+  const [reviews, setReviews] = useState<IReview[]>([])
   const [reviewId, setReviewId] = useState('')
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   const [type, setType] = useState('add')
 
-  const privateAxios = usePrivateAxios()
-
   const { id } = useParams()
-  const { pathname } = useLocation()
-  const { auth } = useAuth()
 
-  const { data, refetch } = useQuery({
-    queryKey: ['review', id],
-    queryFn: () => publicAxios.get(`/review/get/${id}`),
+  const { refetch } = useQuery({
+    queryKey: ['product_review', id],
+    queryFn: () => reviewApi.getProductReview(id!, {}),
     staleTime: 60 * 1000,
-    enabled: id !== undefined
-  })
-
-  const { mutate: addReview, error: addError } = useMutation({
-    mutationFn: (body: any) => {
-      return privateAxios.post(`/review/create/${auth?.username}/${id}`, body)
+    enabled: id !== undefined,
+    onSuccess: (response: IReview[]) => {
+      setReviews(response)
     }
   })
 
-  const { mutate: updateReview, error: updateError } = useMutation({
-    mutationFn: (body: any) => {
-      return privateAxios.patch(`/review/update/${reviewId}`, body)
+  const { mutate: addReview } = useMutation({
+    mutationFn: (body: Pick<IReview, 'rating' | 'comment'>) => {
+      return reviewApi.createReview(id!, body, {})
     }
   })
 
-  useEffect(() => {
-    setReviews(data?.data)
-  }, [data])
+  const { mutate: updateReview } = useMutation({
+    mutationFn: (body: Pick<IReview, 'rating' | 'comment'>) => {
+      return reviewApi.updateReview(id!, body, {})
+    }
+  })
 
   const handleReview = () => {
     if (rating === 0) {
@@ -65,7 +57,6 @@ const UserReview: FC = () => {
             setRating(0)
             setComment('')
             toast.success('Thêm bình luận thành công')
-            refetch()
           },
           onError: (error: any) => {
             toast.error(error.response?.data?.message)
@@ -78,8 +69,8 @@ const UserReview: FC = () => {
             setComment('')
             setReviewId('')
             setType('add')
-            toast.success('Cập nhật bình luận thành công')
             refetch()
+            toast.success('Cập nhật bình luận thành công')
           },
           onError: (error: any) => {
             toast.error(error.response?.data?.message)
@@ -87,6 +78,8 @@ const UserReview: FC = () => {
         })
       }
     }
+
+    return
   }
 
   const handleData = (data: IReview) => {
@@ -96,12 +89,13 @@ const UserReview: FC = () => {
       setReviewId(data.id)
       setType('update')
     }
+    return
   }
 
   return (
     <div className='border border-[#ddd] p-7 text-[#353535]'>
       {reviews && reviews.length !== 0 ? (
-        reviews.map((item) => {
+        reviews.map((item: IReview) => {
           return <Comment key={item.id} review={item} handleData={handleData} />
         })
       ) : (

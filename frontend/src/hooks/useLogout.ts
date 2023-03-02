@@ -10,6 +10,7 @@ const useLogout = () => {
   const logout = async () => {
     try {
       await authApi.sigtOut()
+      localStorage.clear()
       setAuth(authState)
       navigate('/')
     } catch (error) {

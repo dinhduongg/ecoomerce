@@ -42,7 +42,7 @@ export class ProductService {
       const { filters, pageable } = query
       const where = {}
 
-      if (source.startsWith('/cua-hang')) {
+      if (source?.startsWith('/cua-hang')) {
         if (filters.from && filters.to) where['discounted_price'] = { $gte: +filters.from, $lte: +filters.to }
         if (filters.category && filters.category !== 'all') {
           where['category'] = filters.category
@@ -52,13 +52,13 @@ export class ProductService {
         return products.map((product) => this.mapper.toDTO(product))
       }
 
-      if (source.startsWith('/san-pham')) {
+      if (source?.startsWith('/san-pham')) {
         where['category'] = { $in: [...filters.category] }
         const products = await this.repository.find(where)
         return products.map((product) => this.mapper.toDTO(product))
       }
 
-      if (source.startsWith('/giam-gia')) {
+      if (source?.startsWith('/giam-gia')) {
         where['$or'] = [{ discount_percent: { $ne: 0 } }, { discount_price: { $ne: 0 } }]
         if (filters.from && filters.to) where['discounted_price'] = { $gte: +filters.from, $lte: +filters.to }
         if (filters.category && filters.category !== 'all') {
@@ -69,8 +69,10 @@ export class ProductService {
         return products.map((product) => this.mapper.toDTO(product))
       }
 
-      if (filters.is_featured) where['is_featured'] = filters.is_featured === 'true' ? true : false
-      if (filters.is_new) where['is_new'] = filters.is_new === 'true' ? true : false
+      if (filters) {
+        if (filters.is_featured) where['is_featured'] = filters.is_featured === 'true' ? true : false
+        if (filters.is_new) where['is_new'] = filters.is_new === 'true' ? true : false
+      }
 
       const products = await this.repository.find(where)
       return products.map((product) => this.mapper.toDTO(product))

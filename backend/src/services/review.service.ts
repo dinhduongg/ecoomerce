@@ -23,23 +23,23 @@ export class ReviewService {
     protected readonly mapper: ReviewMapper,
     @Inject(CACHE_MANAGER)
     protected readonly _cache: Cache
-  ) {}
+  ) { }
 
-  async create(dto: ReviewDTO) {
+  async create(id: string, req: any, dto: ReviewDTO) {
     try {
-      const alreadyReviewed = await this.getUserReview({ product_id: dto.product_id, user_id: dto.user_id })
+      const alreadyReviewed = await this.getUserReview({ product_id: id, user_id: req?.user?.username })
       if (alreadyReviewed) throw new HttpException('Bạn đã đánh giá sản phẩm này rồi!', HttpStatus.BAD_REQUEST)
 
       const review = this.repository.create(generalReviewTemplate)
 
-      review.product_id = dto.product_id
-      review.user_id = dto.user_id
+      review.product_id = id
+      review.user_id = req.user.username
       review.rating = dto.rating
       review.comment = dto.comment
       await this.repository.persistAndFlush(review)
 
-      await this.calculateProductReview(dto.product_id)
-      return 'Bình luận thành công'
+      await this.calculateProductReview(id)
+      return review
     } catch (error) {
       throw error
     }
@@ -69,16 +69,16 @@ export class ReviewService {
 
   async update(id: string, dto: ReviewDTO) {
     try {
-      const review = await this.repository.findOne({ id })
+      const review = await this.repository.findOne({ product_id: id })
       if (!review) throw new HttpException('Bạn chưa đánh giá sản phẩm này!', HttpStatus.BAD_REQUEST)
 
       review.comment = dto.comment
       review.rating = dto.rating
 
       await this.repository.persistAndFlush(review)
-      await this.calculateProductReview(dto.product_id)
+      await this.calculateProductReview(review.product_id)
 
-      return 'Cập nhật thành công'
+      return { message: 'Cập nhật thành công', review }
     } catch (error) {
       throw error
     }
@@ -103,10 +103,10 @@ export class ReviewService {
     }
   }
 
-  async calculateProductReview(product_id: string) {
+  async calculateProductReview(id: string) {
     try {
-      const product = await this.em.findOne(Product, { id: product_id })
-      const reviews = await this.getProductReview(product_id)
+      const product = await this.em.findOne(Product, { id: id })
+      const reviews = await this.getProductReview(id)
 
       product.num_review = reviews.length
       product.avg_rating = reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
@@ -115,8 +115,8 @@ export class ReviewService {
         +product.avg_rating.toFixed(1).split('.')[1] === 5
           ? +product.avg_rating.toFixed(1)
           : +product.avg_rating.toFixed(1).split('.')[1] < 5
-          ? Math.floor(product.avg_rating)
-          : Math.ceil(product.avg_rating)
+            ? Math.floor(product.avg_rating)
+            : Math.ceil(product.avg_rating)
 
       await this.em.persistAndFlush(product)
     } catch (error) {

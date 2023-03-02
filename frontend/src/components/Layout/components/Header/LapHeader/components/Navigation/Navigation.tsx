@@ -92,7 +92,7 @@ const Navigation: FC = () => {
             )
           })}
 
-          {auth?.accessToken && (
+          {auth?.isAuthenticated && (
             <li className='block py-5 px-4' onClick={handleLogout}>
               <NavLink
                 to='/'
@@ -107,7 +107,7 @@ const Navigation: FC = () => {
 
       {/* user */}
       <div className='flex items-center absolute right-14 top-2/4 -translate-y-2/4'>
-        {auth?.accessToken ? (
+        {auth?.isAuthenticated ? (
           <>
             <NavLink to='/' className='block w-7 text-[#666666]'>
               <img src='https://preview.colorlib.com/theme/fashe/images/icons/icon-header-01.png.webp' alt='ICON' />

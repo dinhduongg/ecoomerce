@@ -14,11 +14,11 @@ const Comment: FC<Props> = ({ review, handleData }) => {
     <div key={review.id}>
       <div className='flex items-baseline space-x-2'>
         <h3 className='text-xl text-[#1c1c1c] font-bold'>{review.id}</h3>
-        {/* {auth?.username === review.username && (
+        {auth?.username === review.user_id && (
           <span className='cursor-pointer hover:underline hover:text-primary' onClick={() => handleData(review)}>
             Chỉnh sửa
           </span>
-        )} */}
+        )}
       </div>
       <h2 className='text-base text-[#353535]'>
         <Rating rating={review.rating} />
