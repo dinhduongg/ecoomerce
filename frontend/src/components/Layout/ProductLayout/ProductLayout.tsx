@@ -7,6 +7,8 @@ import { LapHeader, MobileHeader } from '../components/Header'
 import { Pageable, Query as IQuery } from '~/shared/interface'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { vietnameseCurrency } from '~/utils/utils'
+import { useQuery } from '@tanstack/react-query'
+import categoryApi from '~/api/category.api'
 
 interface Props {
   children: React.ReactNode | any
@@ -26,13 +28,13 @@ const initQuery: IQuery = {
   }
 }
 
-const categories = [
-  { key: 'all', value: 'Tất cả' },
-  { key: 'female', value: 'Nữ' },
-  { key: 'male', value: 'Nam' },
-  { key: 'kid', value: 'Trẻ em' },
-  { key: 'accesories', value: 'Phụ kiện' }
-]
+// const categories = [
+//   { key: 'all', value: 'Tất cả' },
+//   { key: 'female', value: 'Nữ' },
+//   { key: 'male', value: 'Nam' },
+//   { key: 'kid', value: 'Trẻ em' },
+//   { key: 'accesories', value: 'Phụ kiện' }
+// ]
 
 const options = [
   { key: 'createdAt', order: 'd', value: 'Mới nhất' },
@@ -50,6 +52,12 @@ const ProductLayout: FC<Props> = ({ children }) => {
   const [query, setQuery] = useState(initQuery)
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryApi.getAllCategory({}),
+    staleTime: Infinity
+  })
 
   const sortByPrice = (v: string) => {
     if (v === 'DEFAULT') {
@@ -118,7 +126,23 @@ const ProductLayout: FC<Props> = ({ children }) => {
             <div className='pr-5'>
               <h4 className='font-montserrat text-lg text-[rgb(51, 51, 51)] font-black pb-2'>Thể loại</h4>
               <ul>
-                {categories.map((category, index) => {
+                <li
+                  className={classNames('cursor-pointer pt-1', {
+                    'text-red-500': query.filters.category === 'all'
+                  })}
+                  onClick={() =>
+                    setQuery((prev) => ({
+                      ...prev,
+                      filters: {
+                        ...prev.filters,
+                        category: 'all'
+                      }
+                    }))
+                  }
+                >
+                  Tất cả
+                </li>
+                {categories?.map((category, index) => {
                   return (
                     <li
                       className={classNames('cursor-pointer pt-1', {
