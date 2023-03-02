@@ -4,5 +4,6 @@ import { SnowflakeBase } from './support/base.entity'
 
 @Entity()
 export class Category extends SnowflakeBase implements ICategory {
-  @Property() name: string
+  @Property() key: string
+  @Property() value: string
 }

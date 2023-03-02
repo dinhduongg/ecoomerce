@@ -20,7 +20,7 @@ export const generalUserTemplate = Builder(User)
   .updatedAt(new Date())
   .build()
 
-export const generalCategoryTemplate = Builder(Category).name('').createdAt(new Date()).updatedAt(new Date()).build()
+export const generalCategoryTemplate = Builder(Category).key('').value('').createdAt(new Date()).updatedAt(new Date()).build()
 
 export const generalProductTemplate = Builder(Product)
   .id('')
