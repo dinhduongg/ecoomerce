@@ -1,6 +1,7 @@
 import axios from 'axios'
 import queryString from 'query-string'
 import authApi from '~/api/auth.api'
+import { toast } from 'react-toastify'
 
 // public axiosClient
 export const publicAxios = axios.create({
@@ -67,17 +68,21 @@ privateAxios.interceptors.request.use(
 
 privateAxios.interceptors.response.use(
   (response) => {
-    return response
+    if (response.data) {
+      return response.data
+    }
   },
   async (error) => {
     const prevRequest = error?.config
     if (error?.response?.status === 403 && !prevRequest.sent) {
-      const accessToken = await authApi.refreshAccessToken()
-      localStorage.setItem('accessToken', accessToken.data.accessToken)
+      const accessToken: any = await authApi.refreshAccessToken()
+      localStorage.clear()
+      localStorage.setItem('accessToken', accessToken?.accessToken)
       prevRequest.sent = true
-      prevRequest.headers['Authorization'] = `Bearer ${accessToken.data.accessToken}`
+      prevRequest.headers['Authorization'] = `Bearer ${accessToken?.accessToken}`
       return privateAxios(prevRequest)
     }
+    toast.error(error.response.data.message)
     return Promise.reject(error)
   }
 )

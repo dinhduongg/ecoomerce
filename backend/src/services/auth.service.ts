@@ -16,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -118,7 +118,7 @@ export class AuthService {
     try {
       const accessToken = await this.jwtService.signAsync(dto, {
         secret: this.config.get<string>('security.authentication.jwt.access'),
-        expiresIn: '15s'
+        expiresIn: '5m'
       })
 
       return accessToken

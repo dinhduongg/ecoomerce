@@ -12,6 +12,10 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { faHeart } from '@fortawesome/free-regular-svg-icons'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
+import { useMutation } from '@tanstack/react-query'
+import cartApi from '~/api/cart.api'
+import { ProductCart } from '~/shared/cart.interface'
+import { toast } from 'react-toastify'
 
 interface Props {
   products: Product[]
@@ -19,6 +23,19 @@ interface Props {
 
 const ProductSlider: FC<Props> = ({ products }) => {
   const swiperRef: any = useRef()
+
+  const { mutate } = useMutation({
+    mutationKey: ['addToCart'],
+    mutationFn: (dto: Product) => cartApi.addToCart(dto, {})
+  })
+
+  const handleAddToCart = (product: Product) => {
+    mutate(product, {
+      onSuccess: () => {
+        toast.success('Thêm thành công')
+      }
+    })
+  }
 
   return (
     <div className='relative'>
@@ -63,7 +80,7 @@ const ProductSlider: FC<Props> = ({ products }) => {
                       <FontAwesomeIcon icon={faHeart} />
                     </div>
                     <div className='absolute left-2/4 -translate-x-2/4 transition-all duration-300 -bottom-5 group-hover:bottom-5 w-full'>
-                      <Button primary rounded custom='mx-auto'>
+                      <Button primary rounded custom='mx-auto' onClick={() => handleAddToCart(product)}>
                         Thêm vào giỏ
                       </Button>
                     </div>

@@ -1,11 +1,23 @@
 import { faArrowLeftLong, faTag } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQuery } from '@tanstack/react-query'
 import { FC } from 'react'
+import cartApi from '~/api/cart.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 import CartItem from './components/CartItem'
 
 const Cart: FC = () => {
+  const { data: userCart, refetch } = useQuery({
+    queryKey: ['userCart'],
+    queryFn: () => cartApi.getUserCart({}),
+    cacheTime: 60 * 1000 * 10
+  })
+
+  const isLoading = (data: boolean) => {
+    if (!data) refetch()
+  }
+
   return (
     <Helmet title='Giỏ hàng'>
       <div className='max-w-7xl mx-auto'>
@@ -17,22 +29,18 @@ const Cart: FC = () => {
               <h6 className='pl-2 uppercase text-end lg:text-start'>Số lượng</h6>
               <h6 className='pl-2 hidden lg:block uppercase'>Tổng</h6>
               <h6></h6>
-              {/* loop here */}
-              {/* {data?.data.products.length !== 0 ? (
-              data?.data.products.map((product: productCart) => {
-                return <UserCart key={product.id} product={product} isFetching={isFetching} />
-              })
-            ) : (
-              <div className='col-span-5 w-full flex items-center justify-center px-6'>
-                <p className='text-xl py-8'>Giỏ hàng trống trơn</p>
-              </div>
-            )} */}
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
-              <CartItem />
+              {userCart &&
+                userCart.products.length !== 0 &&
+                userCart.products.map((cart, index) => {
+                  return <CartItem cart={cart} key={index} loading={isLoading} />
+                })}
             </div>
+            {!userCart ||
+              (userCart.products.length === 0 && (
+                <div className='col-span-full w-full text-center border-x border-b border-[#ccc] text-xl py-4'>
+                  Giỏ hàng của bạn không có gì
+                </div>
+              ))}
             <div className='flex flex-col lg:flex-row items-start lg:items-center justify-start space-x-0 lg:space-x-4 space-y-2 lg:space-y-0 pt-4'>
               <Button to='/' outline custom='w-auto'>
                 <FontAwesomeIcon icon={faArrowLeftLong} />

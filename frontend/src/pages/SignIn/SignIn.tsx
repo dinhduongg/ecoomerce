@@ -49,8 +49,8 @@ const SignIn: FC = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
     mutate(data, {
-      onSuccess: (response) => {
-        localStorage.setItem('accessToken', response.data.accessToken)
+      onSuccess: (response: any) => {
+        localStorage.setItem('accessToken', response?.accessToken)
         setAuth((prev) => ({
           ...prev,
           ...response.data

@@ -1,3 +1,4 @@
+import { Cart } from '@/entities/cart.entity'
 import { Category } from '@/entities/category.entity'
 import { Product } from '@/entities/product.entity'
 import { Review } from '@/entities/review.entity'
@@ -44,3 +45,5 @@ export const generalProductTemplate = Builder(Product)
   .build()
 
 export const generalReviewTemplate = Builder(Review).product_id('').user_id('').rating(0).comment('').build()
+
+export const generalCartTemplate = Builder(Cart).username('').products([]).total_money(0).build()

@@ -10,6 +10,7 @@ import { CategoryModule } from './module/category.module'
 import { ProductModule } from './module/product.module'
 import { ReviewModule } from './module/review.module'
 import { VoucherModule } from './module/voucher.module'
+import { CartModule } from './module/cart.module'
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { VoucherModule } from './module/voucher.module'
     CategoryModule,
     ProductModule,
     ReviewModule,
-    VoucherModule
+    VoucherModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [AppService]

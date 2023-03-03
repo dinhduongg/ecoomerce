@@ -40,3 +40,8 @@
   @apply border border-[#ccc] focus:border-text-88 focus:ring-1 focus:ring-text-88 focus:outline-none active:outline-none rounded-md;
   @apply w-full z-20;
 }
+
+button:disabled,
+.disabled {
+  @apply bg-gray-300  hover:bg-gray-300 cursor-default;
+}

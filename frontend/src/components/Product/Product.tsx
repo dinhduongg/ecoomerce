@@ -1,7 +1,10 @@
 import { faHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMutation } from '@tanstack/react-query'
 import { FC } from 'react'
 import { NavLink } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import cartApi from '~/api/cart.api'
 import { Product as IProduct } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
 import Button from '../Button'
@@ -11,6 +14,18 @@ interface Props {
 }
 
 const Product: FC<Props> = ({ product }) => {
+  const { mutate } = useMutation({
+    mutationFn: (dto: IProduct) => cartApi.addToCart(dto, {})
+  })
+
+  const handleAddToCart = (product: IProduct) => {
+    mutate(product, {
+      onSuccess: () => {
+        toast.success('Thêm thành công')
+      }
+    })
+  }
+
   return (
     <div className='border border-[#e6e5e5]'>
       <div className='relative'>
@@ -20,7 +35,7 @@ const Product: FC<Props> = ({ product }) => {
             <FontAwesomeIcon icon={faHeart} />
           </div>
           <div className='absolute left-2/4 -translate-x-2/4 transition-all duration-300 -bottom-5 group-hover:bottom-5 w-full'>
-            <Button primary rounded custom='mx-auto'>
+            <Button primary rounded custom='mx-auto' onClick={() => handleAddToCart(product!)}>
               Thêm vào giỏ
             </Button>
           </div>
