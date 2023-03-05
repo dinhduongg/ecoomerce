@@ -82,7 +82,9 @@ privateAxios.interceptors.response.use(
       prevRequest.headers['Authorization'] = `Bearer ${accessToken?.accessToken}`
       return privateAxios(prevRequest)
     }
-    toast.error(error.response.data.message)
+    if (error.response) {
+      toast.error(error.response.data.message)
+    }
     return Promise.reject(error)
   }
 )

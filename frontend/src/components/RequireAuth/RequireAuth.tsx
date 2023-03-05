@@ -13,7 +13,7 @@ const RequireAuth: FC<Props> = ({ allowRoles }) => {
 
   return auth?.authorities?.find((role: string) => allowRoles?.includes(role)) ? (
     <Outlet />
-  ) : auth?.username ? (
+  ) : auth?.isAuthenticated ? (
     <Navigate to='/unauthorized' state={{ from: location }} replace />
   ) : (
     <Navigate to='/dang-nhap' state={{ from: location }} replace />
