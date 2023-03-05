@@ -1,21 +1,22 @@
-import React, { FC, useRef, useState } from 'react'
+import { FC, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
 
-import { Navigation } from 'swiper'
-import Button from '../Button'
-import { NavLink } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { faHeart } from '@fortawesome/free-regular-svg-icons'
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMutation } from '@tanstack/react-query'
+import { NavLink } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { Navigation } from 'swiper'
+import cartApi from '~/api/cart.api'
+import useCartCount from '~/hooks/useCartCount'
+import { actions } from '~/reducer/cartCount'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
-import { useMutation } from '@tanstack/react-query'
-import cartApi from '~/api/cart.api'
-import { ProductCart } from '~/shared/cart.interface'
-import { toast } from 'react-toastify'
+import Button from '../Button'
 
 interface Props {
   products: Product[]
@@ -23,6 +24,7 @@ interface Props {
 
 const ProductSlider: FC<Props> = ({ products }) => {
   const swiperRef: any = useRef()
+  const { dispatch } = useCartCount()
 
   const { mutate } = useMutation({
     mutationKey: ['addToCart'],
@@ -31,8 +33,9 @@ const ProductSlider: FC<Props> = ({ products }) => {
 
   const handleAddToCart = (product: Product) => {
     mutate(product, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         toast.success('Thêm thành công')
+        dispatch(actions.addToCart(1))
       }
     })
   }

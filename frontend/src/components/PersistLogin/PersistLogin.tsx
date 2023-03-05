@@ -3,16 +3,19 @@ import { Outlet } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 
 import useAuth from '~/hooks/useAuth'
+import useCartCount from '~/hooks/useCartCount'
+import { actions } from '~/reducer/cartCount'
 
 const PersistLogin: FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { auth, setAuth } = useAuth()
+  const { dispatch } = useCartCount()
   const [cookies] = useCookies(['userAuth'])
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        // await refresh()
+        dispatch(actions.setCartCount(Number(localStorage.getItem('cartCount')) ?? 0))
         setAuth((prev: any) => ({
           ...prev,
           isAuthenticated: cookies.userAuth?.isAuthenticated,

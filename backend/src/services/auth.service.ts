@@ -1,3 +1,4 @@
+import { Cart } from '@/entities/cart.entity'
 import { registerData } from '@/entities/shared/auth.interface'
 import { User } from '@/entities/user.entity'
 import { EntityManager } from '@mikro-orm/mongodb'
@@ -16,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) { }
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -43,6 +44,9 @@ export class AuthService {
 
       const currentUser = await this.em.findOne(User, { username: user.username })
       const accessToken = await this.generateAccessToken(payload)
+      const userCart = await this.em.findOne(Cart, { username: user.username })
+
+      const cartCount = userCart.products.reduce((acc, item) => item.quantity + acc, 0)
 
       if (!currentUser.refreshToken) {
         const refreshToken = await this.generateRefreshToken(payload)
@@ -67,7 +71,7 @@ export class AuthService {
       )
 
       await this.em.persistAndFlush(currentUser)
-      return { accessToken, isAuthenticated: true, ...payload }
+      return { accessToken, isAuthenticated: true, cartCount, ...payload }
     } catch (error) {
       throw error
     }

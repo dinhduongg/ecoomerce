@@ -6,12 +6,32 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import Button from '~/components/Button'
 import useAuth from '~/hooks/useAuth'
 import useLogout from '~/hooks/useLogout'
+import useCartCount from '~/hooks/useCartCount'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import cartApi from '~/api/cart.api'
+import { vietnameseCurrency } from '~/utils/utils'
+import { ProductCart } from '~/shared/cart.interface'
+import { toast } from 'react-toastify'
+import { actions } from '~/reducer/cartCount'
 
 const Navigation: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
   const { auth } = useAuth()
+  const { count, dispatch } = useCartCount()
   const logout = useLogout()
+
+  const { data: userCart, refetch } = useQuery({
+    queryKey: ['userCart'],
+    queryFn: () => cartApi.getUserCart({}),
+    cacheTime: 60 * 1000 * 10
+  })
+
+  const { mutateAsync: remove, isLoading: rLoading } = useMutation({
+    mutationFn: (product: ProductCart) => {
+      return cartApi.removeProduct(product.product_id, {})
+    }
+  })
 
   const routes = [
     { path: '/', name: 'Trang chủ' },
@@ -47,6 +67,19 @@ const Navigation: FC = () => {
       })
     }
   }, [])
+
+  useEffect(() => {
+    refetch()
+  }, [count])
+
+  const handleRevome = (product: ProductCart) => {
+    remove(product, {
+      onSuccess: () => {
+        toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
+        dispatch(actions.removeFromCart(product.quantity))
+      }
+    })
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -120,10 +153,10 @@ const Navigation: FC = () => {
                 onClick={(e: any) => toogleCart(e)}
               />
               <span
-                className='flex items-center justify-center w-4 h-4 rounded-full bg-[#111111] text-white text-xs absolute top-0 -right-1'
+                className='flex items-center justify-center w-4 h-4 rounded-full bg-[#111111] text-white text-xs absolute top-0 -right-0.5'
                 onClick={(e: any) => toogleCart(e)}
               >
-                0
+                {count}
               </span>
 
               {/* cart */}
@@ -135,59 +168,53 @@ const Navigation: FC = () => {
                   }
                 )}
               >
-                <ul className='max-h-72 overflow-auto'>
-                  <li className='flex flex-wrap items-center py-2'>
-                    <div className='relative w-20 mr-5 group'>
-                      <img src='https://preview.colorlib.com/theme/fashe/images/item-cart-01.jpg' alt='anh san pham' />
-                      <div className='absolute flex items-center justify-center h-full w-full top-0 bg-[rgba(0,0,0,0.5)] transition-all duration-300 opacity-0 group-hover:opacity-100'>
-                        <FontAwesomeIcon className='text-white text-lg' icon={faXmark} />
-                      </div>
+                {userCart?.products.length !== 0 ? (
+                  <>
+                    <ul className='max-h-72 overflow-auto cursor-default'>
+                      {userCart?.products.map((cart, index) => {
+                        return (
+                          <li key={cart.product_id} className='flex flex-wrap items-center py-2'>
+                            <div className='relative w-20 mr-5 group'>
+                              <img src={cart.product_image} alt={cart.product_name} />
+                              <div
+                                onClick={() => handleRevome(cart)}
+                                className='cursor-pointer absolute flex items-center justify-center h-full w-full top-0 bg-[rgba(0,0,0,0.5)] transition-all duration-300 opacity-0 group-hover:opacity-100'
+                              >
+                                <FontAwesomeIcon className='text-white text-lg' icon={faXmark} />
+                              </div>
+                            </div>
+                            <div className='w-[calc(100%-100px)]'>
+                              <NavLink
+                                to={`/san-pham/${cart.product_id}`}
+                                className='block text-55 leading-4 mb-3 break-words hover:text-button-hover'
+                              >
+                                {cart.product_name}
+                              </NavLink>
+                              <span className='block text-xs text-88 leading-4'>
+                                <span>{cart.quantity}</span>
+                                <span className='mx-1'>x</span>
+                                <span>{vietnameseCurrency(cart.discounted_price)}</span>
+                              </span>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    <div className='leading-3 text-55 text-right pt-4 pb-7'>
+                      Tổng: <span className='text-button-hover'>{vietnameseCurrency(userCart?.total_money ?? 0)}</span>
                     </div>
-                    <div className='w-[calc(100%-100px)]'>
-                      <NavLink to='/' className='block text-55 leading-4 mb-3 break-words'>
-                        asas;dlaskd
-                      </NavLink>
-                      <span className='block text-xs text-88 leading-4'>1 x 10.000d</span>
+                    <div className='flex flex-wrap justify-between items-center'>
+                      <Button to='/gio-hang' custom='w-[calc((100%-10px)/2)]' rounded primary>
+                        Xem giỏ hàng
+                      </Button>
+                      <Button to='/thanh-toan' custom='w-[calc((100%-10px)/2)]' rounded primary>
+                        Thanh toán
+                      </Button>
                     </div>
-                  </li>
-                  <li className='flex flex-wrap items-center py-2'>
-                    <div className='relative w-20 mr-5 group'>
-                      <img src='https://preview.colorlib.com/theme/fashe/images/item-cart-01.jpg' alt='anh san pham' />
-                      <div className='absolute flex items-center justify-center h-full w-full top-0 bg-[rgba(0,0,0,0.5)] transition-all duration-300 opacity-0 group-hover:opacity-100'>
-                        <FontAwesomeIcon className='text-white text-lg' icon={faXmark} />
-                      </div>
-                    </div>
-                    <div className='w-[calc(100%-100px)]'>
-                      <NavLink to='/' className='block text-55 leading-4 mb-3 break-words'>
-                        asas;dlaskd
-                      </NavLink>
-                      <span className='block text-xs text-88 leading-4'>1 x 10.000d</span>
-                    </div>
-                  </li>
-                  <li className='flex flex-wrap items-center py-2'>
-                    <div className='relative w-20 mr-5 group'>
-                      <img src='https://preview.colorlib.com/theme/fashe/images/item-cart-01.jpg' alt='anh san pham' />
-                      <div className='absolute flex items-center justify-center h-full w-full top-0 bg-[rgba(0,0,0,0.5)] transition-all duration-300 opacity-0 group-hover:opacity-100'>
-                        <FontAwesomeIcon className='text-white text-lg' icon={faXmark} />
-                      </div>
-                    </div>
-                    <div className='w-[calc(100%-100px)]'>
-                      <NavLink to='/' className='block text-55 leading-4 mb-3 break-words'>
-                        asas;dlaskd
-                      </NavLink>
-                      <span className='block text-xs text-88 leading-4'>1 x 10.000d</span>
-                    </div>
-                  </li>
-                </ul>
-                <div className='leading-3 text-55 text-right pt-4 pb-7'>Total: 210.000d</div>
-                <div className='flex flex-wrap justify-between items-center'>
-                  <Button to='/gio-hang' custom='w-[calc((100%-10px)/2)]' rounded primary>
-                    Xem giỏ hàng
-                  </Button>
-                  <Button to='/thanh-toan' custom='w-[calc((100%-10px)/2)]' rounded primary>
-                    Thanh toán
-                  </Button>
-                </div>
+                  </>
+                ) : (
+                  <div className='text-center py-5 text-lg cursor-default'>Giỏ hàng của bạn trống trơn</div>
+                )}
               </div>
             </div>
           </>

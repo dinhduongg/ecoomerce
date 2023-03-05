@@ -51,6 +51,7 @@ const SignIn: FC = () => {
     mutate(data, {
       onSuccess: (response: any) => {
         localStorage.setItem('accessToken', response?.accessToken)
+        localStorage.setItem('cartCount', response?.cartCount)
         setAuth((prev) => ({
           ...prev,
           ...response.data

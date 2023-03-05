@@ -6,8 +6,10 @@ import { FC, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
+import useCartCount from '~/hooks/useCartCount'
 import { ProductCart } from '~/shared/cart.interface'
 import { vietnameseCurrency } from '~/utils/utils'
+import { actions } from '~/reducer/cartCount'
 
 interface Props {
   cart: ProductCart
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const CartItem: FC<Props> = ({ cart, loading }) => {
+  const { dispatch } = useCartCount()
+
   const { mutateAsync: updateQty, isLoading } = useMutation({
     mutationFn: (obj: any) => {
       return cartApi.updateQuantity(obj)
@@ -33,13 +37,18 @@ const CartItem: FC<Props> = ({ cart, loading }) => {
       dto: cart,
       query: {}
     }
-    updateQty(obj)
+    updateQty(obj, {
+      onSuccess: () => {
+        type === 'increase' ? dispatch(actions.addToCart(1)) : dispatch(actions.removeFromCart(1))
+      }
+    })
   }
 
   const handleRemoveCart = (id: string) => {
     remove(id, {
       onSuccess: () => {
         toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
+        dispatch(actions.removeFromCart(cart.quantity))
       }
     })
   }

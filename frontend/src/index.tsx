@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import '~/assets/index.css'
 import { AuthProvider } from '~/context/AuthProvider'
+import { CartCountProvider } from '~/context/CartCountProvider'
 
 const queryClient = new QueryClient()
 
@@ -16,10 +17,12 @@ root.render(
   <React.StrictMode>
     <CookiesProvider>
       <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <App />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <CartCountProvider>
+          <QueryClientProvider client={queryClient}>
+            <App />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </CartCountProvider>
       </AuthProvider>
     </CookiesProvider>
   </React.StrictMode>
