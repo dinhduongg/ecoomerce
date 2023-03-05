@@ -7,7 +7,7 @@ import Button from '~/components/Button'
 import useAuth from '~/hooks/useAuth'
 import useLogout from '~/hooks/useLogout'
 import useCartCount from '~/hooks/useCartCount'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import cartApi from '~/api/cart.api'
 import { vietnameseCurrency } from '~/utils/utils'
 import { ProductCart } from '~/shared/cart.interface'
@@ -20,11 +20,19 @@ const Navigation: FC = () => {
   const { auth } = useAuth()
   const { count, dispatch } = useCartCount()
   const logout = useLogout()
+  const queryClient = useQueryClient()
 
   const { data: userCart, refetch } = useQuery({
     queryKey: ['userCart'],
-    queryFn: () => cartApi.getUserCart({}),
-    cacheTime: 60 * 1000 * 10
+    queryFn: () => {
+      const controller = new AbortController()
+      if (Boolean(auth?.isAuthenticated) === false) {
+        controller.abort()
+      }
+      return cartApi.getUserCart({}, controller.signal)
+    },
+    cacheTime: 60 * 1000 * 10,
+    retry: false
   })
 
   const { mutateAsync: remove, isLoading: rLoading } = useMutation({
@@ -77,6 +85,7 @@ const Navigation: FC = () => {
       onSuccess: () => {
         toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(product.quantity))
+        queryClient.invalidateQueries({ queryKey: ['userCart'] })
       }
     })
   }
@@ -88,7 +97,7 @@ const Navigation: FC = () => {
   return (
     <div
       className={classNames(
-        'flex flex-wrap items-center justify-center bg-white transition-all duration-300 z-[9999] shadow-lg-header',
+        'flex flex-wrap items-center justify-center bg-white transition-all duration-300 z-20 shadow-lg-header',
         {
           'fixed w-full top-0 h-16': Boolean(st > 50),
           'relative h-20': Boolean(st < 50)
@@ -126,14 +135,24 @@ const Navigation: FC = () => {
           })}
 
           {auth?.isAuthenticated && (
-            <li className='block py-5 px-4' onClick={handleLogout}>
-              <NavLink
-                to='/'
-                className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
-              >
-                Đăng xuất
-              </NavLink>
-            </li>
+            <>
+              <li className='block py-5 px-4' onClick={handleLogout}>
+                <NavLink
+                  to='/gio-hang'
+                  className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
+                >
+                  Giỏ hàng
+                </NavLink>
+              </li>
+              <li className='block py-5 px-4' onClick={handleLogout}>
+                <NavLink
+                  to='/'
+                  className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
+                >
+                  Đăng xuất
+                </NavLink>
+              </li>
+            </>
           )}
         </ul>
       </nav>

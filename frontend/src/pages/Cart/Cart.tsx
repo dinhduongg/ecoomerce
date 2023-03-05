@@ -8,15 +8,10 @@ import Helmet from '~/components/Helmet'
 import CartItem from './components/CartItem'
 
 const Cart: FC = () => {
-  const { data: userCart, refetch } = useQuery({
+  const { data: userCart } = useQuery({
     queryKey: ['userCart'],
-    queryFn: () => cartApi.getUserCart({}),
-    cacheTime: 60 * 1000 * 10
+    queryFn: () => cartApi.getUserCart({})
   })
-
-  const isLoading = (data: boolean) => {
-    if (!data) refetch()
-  }
 
   return (
     <Helmet title='Giỏ hàng'>
@@ -32,7 +27,7 @@ const Cart: FC = () => {
               {userCart &&
                 userCart.products.length !== 0 &&
                 userCart.products.map((cart, index) => {
-                  return <CartItem cart={cart} key={index} loading={isLoading} />
+                  return <CartItem cart={cart} key={index} />
                 })}
             </div>
             {!userCart ||

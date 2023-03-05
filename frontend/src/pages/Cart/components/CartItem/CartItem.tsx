@@ -1,23 +1,23 @@
 import { faXmarkCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
 import useCartCount from '~/hooks/useCartCount'
+import { actions } from '~/reducer/cartCount'
 import { ProductCart } from '~/shared/cart.interface'
 import { vietnameseCurrency } from '~/utils/utils'
-import { actions } from '~/reducer/cartCount'
 
 interface Props {
   cart: ProductCart
-  loading: any
 }
 
-const CartItem: FC<Props> = ({ cart, loading }) => {
+const CartItem: FC<Props> = ({ cart }) => {
   const { dispatch } = useCartCount()
+  const queryClient = useQueryClient()
 
   const { mutateAsync: updateQty, isLoading } = useMutation({
     mutationFn: (obj: any) => {
@@ -40,6 +40,7 @@ const CartItem: FC<Props> = ({ cart, loading }) => {
     updateQty(obj, {
       onSuccess: () => {
         type === 'increase' ? dispatch(actions.addToCart(1)) : dispatch(actions.removeFromCart(1))
+        queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
       }
     })
   }
@@ -49,14 +50,10 @@ const CartItem: FC<Props> = ({ cart, loading }) => {
       onSuccess: () => {
         toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(cart.quantity))
+        queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
       }
     })
   }
-
-  useEffect(() => {
-    loading(isLoading)
-    loading(rLoading)
-  }, [isLoading, rLoading])
 
   return (
     <>
