@@ -17,6 +17,7 @@ import { actions } from '~/reducer/cartCount'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
 import Button from '../Button'
+import useAuth from '~/hooks/useAuth'
 
 interface Props {
   products: Product[]
@@ -25,6 +26,7 @@ interface Props {
 const ProductSlider: FC<Props> = ({ products }) => {
   const swiperRef: any = useRef()
   const { dispatch } = useCartCount()
+  const { auth } = useAuth()
 
   const { mutate } = useMutation({
     mutationKey: ['addToCart'],
@@ -83,8 +85,14 @@ const ProductSlider: FC<Props> = ({ products }) => {
                       <FontAwesomeIcon icon={faHeart} />
                     </div>
                     <div className='absolute left-2/4 -translate-x-2/4 transition-all duration-300 -bottom-5 group-hover:bottom-5 w-full'>
-                      <Button primary rounded custom='mx-auto' onClick={() => handleAddToCart(product)}>
-                        Thêm vào giỏ
+                      <Button
+                        disabled={product?.inUserCart.includes(auth?.username!)}
+                        primary
+                        rounded
+                        custom='mx-auto'
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        {product?.inUserCart.includes(auth?.username!) ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
                       </Button>
                     </div>
                   </div>

@@ -1,4 +1,5 @@
 import { Cart } from '@/entities/cart.entity'
+import { Product } from '@/entities/product.entity'
 import { EntityManager, MongoEntityRepository } from '@mikro-orm/mongodb'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
@@ -20,9 +21,11 @@ export class CartService {
   async create(dto: Partial<ProductCartDTO> & Pick<ProductDTO, 'id'>, user: any) {
     try {
       const userCart = await this.repository.findOne({ username: user.username })
-      const product = this.mapper.toEntity(dto)
 
+      const product = this.mapper.toEntity(dto)
       product.total_price = product.quantity * product.discounted_price
+
+      await this.updateInUserCart(product.product_id, user, 'add')
 
       if (!userCart) {
         const cart = this.repository.create(cloneDeep(generalCartTemplate))
@@ -101,14 +104,33 @@ export class CartService {
   async remove(id: string, user: any): Promise<CartDTO> {
     try {
       const cart = await this.getUserCart(user)
+
       const idx = this.findIndex(cart.products, id)
       cart.products.splice(idx, 1)
       cart.total_money = cart.products.reduce((acc, item) => item.total_price + acc, 0)
+      await this.updateInUserCart(id, user, 'delete')
 
       await this.repository.persistAndFlush(cart)
       return cart
     } catch (error) {
       throw new HttpException('Có lỗi trong quá trình xóa sản phẩm khỏi giỏ hàng', HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  private async updateInUserCart(id: string, user: any, type: 'add' | 'delete') {
+    try {
+      const product = await this.em.findOne(Product, { id })
+
+      if (type === 'add') {
+        product.inUserCart.push(user.username)
+      } else {
+        product.inUserCart = product.inUserCart.filter((item) => item !== user.username)
+      }
+
+      await this.em.persistAndFlush(product)
+      return product
+    } catch (error) {
+      throw error
     }
   }
 

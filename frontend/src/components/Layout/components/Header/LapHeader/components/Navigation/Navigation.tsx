@@ -136,7 +136,7 @@ const Navigation: FC = () => {
 
           {auth?.isAuthenticated && (
             <>
-              <li className='block py-5 px-4' onClick={handleLogout}>
+              <li className='block py-5 px-4'>
                 <NavLink
                   to='/gio-hang'
                   className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'

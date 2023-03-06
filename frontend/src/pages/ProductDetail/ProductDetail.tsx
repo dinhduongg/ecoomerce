@@ -7,6 +7,7 @@ import productApi from '~/api/product.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 import ProductSlider from '~/components/ProductSlider'
+import useAuth from '~/hooks/useAuth'
 import { Query } from '~/shared/interface'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
@@ -37,6 +38,7 @@ const ProductDetail: FC = () => {
   const [query, setQuery] = useState<Query>()
   const [product, setProduct] = useState<Product>()
   const [products, setProducts] = useState<Product[]>([])
+  const { auth } = useAuth()
 
   const { id } = useParams()
 
@@ -104,8 +106,12 @@ const ProductDetail: FC = () => {
                   +
                 </span>
               </div>
-              <Button primary custom='w-auto rounded-none py-2'>
-                Thêm vào giỏ
+              <Button
+                disabled={product?.inUserCart.includes(auth?.username!)}
+                primary
+                custom='w-auto rounded-none py-2'
+              >
+                {product?.inUserCart.includes(auth?.username!) ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
               </Button>
             </div>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-12'>

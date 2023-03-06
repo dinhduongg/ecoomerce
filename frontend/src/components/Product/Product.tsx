@@ -5,6 +5,7 @@ import { FC } from 'react'
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
+import useAuth from '~/hooks/useAuth'
 import { Product as IProduct } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
 import Button from '../Button'
@@ -14,6 +15,8 @@ interface Props {
 }
 
 const Product: FC<Props> = ({ product }) => {
+  const { auth } = useAuth()
+
   const { mutate } = useMutation({
     mutationFn: (dto: IProduct) => cartApi.addToCart(dto, {})
   })
@@ -35,8 +38,14 @@ const Product: FC<Props> = ({ product }) => {
             <FontAwesomeIcon icon={faHeart} />
           </div>
           <div className='absolute left-2/4 -translate-x-2/4 transition-all duration-300 -bottom-5 group-hover:bottom-5 w-full'>
-            <Button primary rounded custom='mx-auto' onClick={() => handleAddToCart(product!)}>
-              Thêm vào giỏ
+            <Button
+              disabled={product?.inUserCart.includes(auth?.username!)}
+              primary
+              rounded
+              custom='mx-auto'
+              onClick={() => handleAddToCart(product!)}
+            >
+              {product?.inUserCart.includes(auth?.username!) ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
             </Button>
           </div>
         </div>
