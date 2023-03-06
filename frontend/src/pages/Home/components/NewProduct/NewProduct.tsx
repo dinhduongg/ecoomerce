@@ -12,7 +12,7 @@ const NewProduct: FC<path> = () => {
   const [query, setQuery] = useState<Query>({ filters: { is_featured: true } })
 
   useQuery({
-    queryKey: ['home-featured'],
+    queryKey: ['product', 'home-featured'],
     queryFn: () => publicAxios.get<Product[]>('/product', { params: query }),
     cacheTime: 1000 * 60 * 10,
     onSuccess: (response: Product[]) => {

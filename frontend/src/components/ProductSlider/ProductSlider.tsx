@@ -12,12 +12,13 @@ import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Navigation } from 'swiper'
 import cartApi from '~/api/cart.api'
+import useAuth from '~/hooks/useAuth'
 import useCartCount from '~/hooks/useCartCount'
+import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
 import { actions } from '~/reducer/cartCount'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
 import Button from '../Button'
-import useAuth from '~/hooks/useAuth'
 
 interface Props {
   products: Product[]
@@ -27,6 +28,7 @@ const ProductSlider: FC<Props> = ({ products }) => {
   const swiperRef: any = useRef()
   const { dispatch } = useCartCount()
   const { auth } = useAuth()
+  const invalidateProduct = useInvalidateProduct()
 
   const { mutate } = useMutation({
     mutationKey: ['addToCart'],
@@ -38,6 +40,7 @@ const ProductSlider: FC<Props> = ({ products }) => {
       onSuccess: () => {
         toast.success('Thêm thành công')
         dispatch(actions.addToCart(1))
+        invalidateProduct()
       }
     })
   }

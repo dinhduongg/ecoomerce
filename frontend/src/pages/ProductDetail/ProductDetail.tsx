@@ -1,13 +1,18 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import { toast } from 'react-toastify'
+import cartApi from '~/api/cart.api'
 import productApi from '~/api/product.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 import ProductSlider from '~/components/ProductSlider'
 import useAuth from '~/hooks/useAuth'
+import useCartCount from '~/hooks/useCartCount'
+import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
+import { actions } from '~/reducer/cartCount'
 import { Query } from '~/shared/interface'
 import { Product } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
@@ -39,6 +44,8 @@ const ProductDetail: FC = () => {
   const [product, setProduct] = useState<Product>()
   const [products, setProducts] = useState<Product[]>([])
   const { auth } = useAuth()
+  const { dispatch } = useCartCount()
+  const invalidateProduct = useInvalidateProduct()
 
   const { id } = useParams()
 
@@ -58,13 +65,27 @@ const ProductDetail: FC = () => {
   })
 
   useQuery({
-    queryKey: ['related-product'],
+    queryKey: ['product', 'related'],
     queryFn: () => productApi.getAll(query as Query),
     enabled: query?.filters != undefined,
     onSuccess: (response: Product[]) => {
       setProducts(response)
     }
   })
+
+  const { mutate } = useMutation({
+    mutationFn: (product: Product) => cartApi.addToCart(product, {})
+  })
+
+  const handleAddToCart = () => {
+    mutate(product!, {
+      onSuccess: () => {
+        toast.success('Thêm thành công')
+        dispatch(actions.addToCart(1))
+        invalidateProduct()
+      }
+    })
+  }
 
   if (isLoading) {
     return <>is Loading ...</>
@@ -110,6 +131,7 @@ const ProductDetail: FC = () => {
                 disabled={product?.inUserCart.includes(auth?.username!)}
                 primary
                 custom='w-auto rounded-none py-2'
+                onClick={handleAddToCart}
               >
                 {product?.inUserCart.includes(auth?.username!) ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
               </Button>

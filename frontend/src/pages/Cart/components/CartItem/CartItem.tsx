@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
 import useCartCount from '~/hooks/useCartCount'
+import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
 import { actions } from '~/reducer/cartCount'
 import { ProductCart } from '~/shared/cart.interface'
 import { vietnameseCurrency } from '~/utils/utils'
@@ -17,6 +18,7 @@ interface Props {
 
 const CartItem: FC<Props> = ({ cart }) => {
   const { dispatch } = useCartCount()
+  const invalidateProduct = useInvalidateProduct()
   const queryClient = useQueryClient()
 
   const { mutateAsync: updateQty, isLoading } = useMutation({
@@ -51,6 +53,7 @@ const CartItem: FC<Props> = ({ cart }) => {
         toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(cart.quantity))
         queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
+        invalidateProduct()
       }
     })
   }

@@ -13,6 +13,7 @@ import { vietnameseCurrency } from '~/utils/utils'
 import { ProductCart } from '~/shared/cart.interface'
 import { toast } from 'react-toastify'
 import { actions } from '~/reducer/cartCount'
+import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
 
 const Navigation: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +21,7 @@ const Navigation: FC = () => {
   const { auth } = useAuth()
   const { count, dispatch } = useCartCount()
   const logout = useLogout()
+  const invalidateProduct = useInvalidateProduct()
   const queryClient = useQueryClient()
 
   const { data: userCart, refetch } = useQuery({
@@ -86,6 +88,7 @@ const Navigation: FC = () => {
         toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(product.quantity))
         queryClient.invalidateQueries({ queryKey: ['userCart'] })
+        invalidateProduct()
       }
     })
   }

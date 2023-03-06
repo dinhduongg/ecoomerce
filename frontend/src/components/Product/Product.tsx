@@ -6,6 +6,9 @@ import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
 import useAuth from '~/hooks/useAuth'
+import useCartCount from '~/hooks/useCartCount'
+import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
+import { actions } from '~/reducer/cartCount'
 import { Product as IProduct } from '~/shared/product.interface'
 import { vietnameseCurrency } from '~/utils/utils'
 import Button from '../Button'
@@ -16,6 +19,8 @@ interface Props {
 
 const Product: FC<Props> = ({ product }) => {
   const { auth } = useAuth()
+  const { dispatch } = useCartCount()
+  const invalidateProduct = useInvalidateProduct()
 
   const { mutate } = useMutation({
     mutationFn: (dto: IProduct) => cartApi.addToCart(dto, {})
@@ -25,6 +30,8 @@ const Product: FC<Props> = ({ product }) => {
     mutate(product, {
       onSuccess: () => {
         toast.success('Thêm thành công')
+        dispatch(actions.addToCart(1))
+        invalidateProduct()
       }
     })
   }
