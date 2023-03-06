@@ -67,10 +67,11 @@ privateAxios.interceptors.request.use(
 )
 
 privateAxios.interceptors.response.use(
-  (response) => {
-    if (response.data) {
+  async (response) => {
+    if (Boolean(response.data)) {
       return response.data
     }
+    return response
   },
   async (error) => {
     const prevRequest = error?.config

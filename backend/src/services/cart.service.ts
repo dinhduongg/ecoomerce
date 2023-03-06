@@ -117,6 +117,16 @@ export class CartService {
     }
   }
 
+  async getUserCartCount(user: any): Promise<any> {
+    try {
+      const userCart = await this.getUserCart(user)
+      const count = userCart.products.reduce((acc, item) => item.quantity + acc, 0)
+      return { count }
+    } catch (error) {
+      throw error
+    }
+  }
+
   private async updateInUserCart(id: string, user: any, type: 'add' | 'delete') {
     try {
       const product = await this.em.findOne(Product, { id })

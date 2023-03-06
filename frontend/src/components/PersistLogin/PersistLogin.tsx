@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie'
 import useAuth from '~/hooks/useAuth'
 import useCartCount from '~/hooks/useCartCount'
 import { actions } from '~/reducer/cartCount'
+import cartApi from '~/api/cart.api'
 
 const PersistLogin: FC = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -15,7 +16,9 @@ const PersistLogin: FC = () => {
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        dispatch(actions.setCartCount(Number(localStorage.getItem('cartCount')) ?? 0))
+        const count = await cartApi.getUserCartCount({})
+        dispatch(actions.setCartCount(count.count))
+
         setAuth((prev: any) => ({
           ...prev,
           isAuthenticated: cookies.userAuth?.isAuthenticated,

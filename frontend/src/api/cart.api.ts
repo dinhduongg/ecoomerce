@@ -1,4 +1,4 @@
-import { Cart, ProductCart } from '~/shared/cart.interface'
+import { Cart } from '~/shared/cart.interface'
 import { Query } from '~/shared/interface'
 import { Product } from '~/shared/product.interface'
 import { privateAxios } from '~/utils/axiosClient'
@@ -6,6 +6,10 @@ import { privateAxios } from '~/utils/axiosClient'
 const cartApi = {
   getUserCart: (query: Query, signal?: AbortSignal): Promise<Cart> => {
     return privateAxios.get('/cart', { params: query, signal })
+  },
+
+  getUserCartCount: (query: Query): Promise<any> => {
+    return privateAxios.get('/cart/count', { params: query })
   },
 
   addToCart: (dto: Product, query: Query): Promise<Cart> => {

@@ -7,25 +7,30 @@ import { CartService } from '../services/cart.service'
 @Controller('cart')
 @UseGuards(TokenVerifyGuard)
 export class CartController {
-    constructor(private readonly cartService: CartService) { }
+  constructor(private readonly cartService: CartService) {}
 
-    @Post('create')
-    create(@Body() dto: Partial<ProductCartDTO> & Pick<ProductDTO, 'id'>, @Req() req: any) {
-        return this.cartService.create(dto, req.user)
-    }
+  @Post('create')
+  create(@Body() dto: Partial<ProductCartDTO> & Pick<ProductDTO, 'id'>, @Req() req: any) {
+    return this.cartService.create(dto, req.user)
+  }
 
-    @Get()
-    getUserCart(@Req() req) {
-        return this.cartService.getUserCart(req.user)
-    }
+  @Get()
+  getUserCart(@Req() req) {
+    return this.cartService.getUserCart(req.user)
+  }
 
-    @Patch('quantity/:type')
-    updateQuantity(@Param('type') type: 'increase' | 'decrease', @Body() dto: ProductCartDTO, @Req() req: any) {
-        return this.cartService.updateQuantity(type, dto, req.user)
-    }
+  @Get('count')
+  getUserCartCount(@Req() req) {
+    return this.cartService.getUserCartCount(req.user)
+  }
 
-    @Delete('delete/:id')
-    remove(@Param('id') id: string, @Req() req: any) {
-        return this.cartService.remove(id, req.user)
-    }
+  @Patch('quantity/:type')
+  updateQuantity(@Param('type') type: 'increase' | 'decrease', @Body() dto: ProductCartDTO, @Req() req: any) {
+    return this.cartService.updateQuantity(type, dto, req.user)
+  }
+
+  @Delete('delete/:id')
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.cartService.remove(id, req.user)
+  }
 }
