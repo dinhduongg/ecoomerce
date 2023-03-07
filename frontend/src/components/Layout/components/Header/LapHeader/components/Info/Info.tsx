@@ -27,7 +27,7 @@ const Info: FC = () => {
       <span className='text-88 text-sm'>Free shipping for standard order over $100</span>
       <div className='absolute h-full top-0 right-0 flex items-center pr-10'>
         <span className='text-88 text-sm'>
-          Chào mừng: <span className='text-[#e65540] font-bold'>{auth?.username}</span>
+          Chào mừng: <span className='text-[#e65540] font-bold'>{auth?.username ?? 'Khách'}</span>
         </span>
       </div>
     </div>

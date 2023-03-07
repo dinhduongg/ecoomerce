@@ -177,7 +177,7 @@ const Navigation: FC = () => {
       <div className='flex items-center absolute right-14 top-2/4 -translate-y-2/4'>
         {auth?.isAuthenticated ? (
           <>
-            <NavLink to='/' className='block w-7 text-[#666666]'>
+            <NavLink to='/tai-khoan' className='block w-7 text-[#666666]'>
               <img src='https://preview.colorlib.com/theme/fashe/images/icons/icon-header-01.png.webp' alt='ICON' />
             </NavLink>
             <span className='block h-5 w-[1px] bg-[#e5e5e5] mx-6 my-auto'></span>
