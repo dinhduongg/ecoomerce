@@ -50,7 +50,6 @@ const CartItem: FC<Props> = ({ cart }) => {
   const handleRemoveCart = (id: string) => {
     remove(id, {
       onSuccess: () => {
-        toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(cart.quantity))
         queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
         invalidateProduct()

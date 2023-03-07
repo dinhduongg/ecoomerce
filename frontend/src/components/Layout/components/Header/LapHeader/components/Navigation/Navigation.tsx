@@ -85,7 +85,6 @@ const Navigation: FC = () => {
   const handleRevome = (product: ProductCart) => {
     remove(product, {
       onSuccess: () => {
-        toast.success('Bỏ sản phẩm ra khỏi giỏ hàng thành công')
         dispatch(actions.removeFromCart(product.quantity))
         queryClient.invalidateQueries({ queryKey: ['userCart'] })
         invalidateProduct()

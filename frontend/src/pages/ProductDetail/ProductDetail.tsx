@@ -86,7 +86,6 @@ const ProductDetail: FC = () => {
   const handleAddToCart = () => {
     mutate(product!, {
       onSuccess: () => {
-        toast.success('Thêm thành công')
         dispatch(actions.addToCart(1))
         invalidateProduct()
       }

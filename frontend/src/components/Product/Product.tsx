@@ -36,7 +36,6 @@ const Product: FC<Props> = ({ product }) => {
   const handleAddToCart = (product: IProduct) => {
     mutate(product, {
       onSuccess: () => {
-        toast.success('Thêm thành công')
         dispatch(actions.addToCart(1))
         invalidateProduct()
       }

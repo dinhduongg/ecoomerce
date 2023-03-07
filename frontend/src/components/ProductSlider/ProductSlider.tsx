@@ -45,7 +45,6 @@ const ProductSlider: FC<Props> = ({ products }) => {
   const handleAddToCart = (product: Product) => {
     mutate(product, {
       onSuccess: () => {
-        toast.success('Thêm thành công')
         dispatch(actions.addToCart(1))
         invalidateProduct()
       }
