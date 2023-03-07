@@ -1,5 +1,3 @@
-import { faTag } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FC } from 'react'
 import Button from '~/components/Button'
 import useCartCount from '~/hooks/useCartCount'
