@@ -16,7 +16,7 @@ export class CartService {
     protected readonly repository: MongoEntityRepository<Cart>,
     protected readonly em: EntityManager,
     protected readonly mapper: ProductCartMapper
-  ) {}
+  ) { }
 
   async create(dto: Partial<ProductCartDTO> & Pick<ProductDTO, 'id'>, user: any) {
     try {
@@ -73,28 +73,26 @@ export class CartService {
     try {
       const cart = await this.getUserCart(req)
       if (type == 'increase') {
-        cart.products.map((cart) => {
-          if (cart.product_id === dto.product_id) {
-            cart.quantity += 1
-            cart.total_price = cart.discounted_price * cart.quantity
+        cart.products.map((item) => {
+          if (item.product_id === dto.product_id) {
+            item.quantity += 1
+            item.total_price = item.discounted_price * item.quantity
           }
-          return cart
+          return item
         })
-
-        this.repository.persist(cart)
       } else {
-        cart.products.map((cart) => {
-          if (cart.product_id === dto.product_id) {
-            cart.quantity = cart.quantity === 1 ? 1 : cart.quantity - 1
-            cart.total_price = cart.discounted_price * cart.quantity
+        cart.products.map((item) => {
+          if (item.product_id === dto.product_id) {
+            item.quantity = item.quantity === 1 ? 1 : item.quantity - 1
+            item.total_price = item.discounted_price * item.quantity
           }
-          return cart
+          return item
         })
-
-        this.repository.persist(cart)
       }
 
-      await this.repository.flush()
+      cart.total_money = cart.products.reduce((acc, item) => item.total_price + acc, 0)
+
+      await this.repository.persistAndFlush(cart)
       return cart
     } catch (error) {
       throw new HttpException(`Có lỗi trong quá trình cập nhật số lượng`, HttpStatus.BAD_REQUEST)

@@ -6,6 +6,7 @@ import cartApi from '~/api/cart.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 import CartItem from './components/CartItem'
+import CheckOut from './components/CheckOut'
 
 const Cart: FC = () => {
   const { data: userCart } = useQuery({
@@ -43,40 +44,7 @@ const Cart: FC = () => {
               </Button>
             </div>
           </div>
-          <div className='mt-6 lg:mt-0 col-span-1 lg:col-span-2'>
-            <div className='gtable grid grid-cols-1 p-4'>
-              <h6>Tổng số lương</h6>
-              <div className='!py-4 flex items-center justify-between'>
-                <span className='text-lg'>Tổng phụ</span>
-                <span className='text-lg font-bold'>100000d</span>
-              </div>
-              <div className='!py-4 flex items-center justify-between'>
-                <span className='text-lg'>Mã giảm giá</span>
-                <span className='text-lg font-bold'>GIAM50</span>
-              </div>
-              <div className='!py-4 flex items-center justify-between'>
-                <span className='text-lg'>Tổng</span>
-                <span className='text-lg font-bold'>100000d</span>
-              </div>
-              <Button to='/thanh-toan' primary custom='rounded-none'>
-                Tiến hành thanh toán
-              </Button>
-              <div className='!py-4 flex items-center space-x-2'>
-                <FontAwesomeIcon className='opacity-60 text-lg' icon={faTag} />
-                <span className='text-lg'>Phiếu ưu đãi</span>
-              </div>
-              <div className='!py-4'>
-                <input
-                  className='border border-[#ddd] outline-none w-full p-2 text-base'
-                  type='text'
-                  placeholder='Nhập mã ưu đãi'
-                />
-              </div>
-              <Button custom='border border-[#ddd] rounded-none bg-[#f9f9f9] hover:shadow-header-btn text-[#666]'>
-                Áp dụng
-              </Button>
-            </div>
-          </div>
+          <CheckOut userCart={userCart!} />
         </div>
       </div>
     </Helmet>
