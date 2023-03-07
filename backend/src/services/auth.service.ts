@@ -17,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
     private em: EntityManager
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOne(username)
@@ -46,7 +46,7 @@ export class AuthService {
       const accessToken = await this.generateAccessToken(payload)
       const userCart = await this.em.findOne(Cart, { username: user.username })
 
-      const cartCount = userCart.products.reduce((acc, item) => item.quantity + acc, 0)
+      const cartCount = userCart ? userCart.products.reduce((acc, item) => item.quantity + acc, 0) : 0
 
       if (!currentUser.refreshToken) {
         const refreshToken = await this.generateRefreshToken(payload)

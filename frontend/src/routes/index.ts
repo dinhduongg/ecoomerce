@@ -4,6 +4,7 @@ import Blog from '~/pages/Blog'
 import Cart from '~/pages/Cart'
 import CheckOut from '~/pages/CheckOut'
 import Contact from '~/pages/Contact'
+import Favorite from '~/pages/Favorite'
 import Home from '~/pages/Home'
 import NoutFound from '~/pages/NotFound'
 import ProductDetail from '~/pages/ProductDetail'
@@ -32,7 +33,10 @@ const publicRoutes: route[] = [
   { path: '/*', component: NoutFound, layout: null }
 ]
 
-const privateUserRoutes: route[] = [{ path: '/gio-hang', component: Cart, layout: DefaultLayout }]
+const privateUserRoutes: route[] = [
+  { path: '/gio-hang', component: Cart, layout: DefaultLayout },
+  { path: '/yeu-thich', component: Favorite, layout: DefaultLayout }
+]
 
 const managerRoute: route[] = []
 

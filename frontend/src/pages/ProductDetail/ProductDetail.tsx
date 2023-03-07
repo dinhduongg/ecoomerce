@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { toast } from 'react-toastify'
 import cartApi from '~/api/cart.api'
+import favoriteApi from '~/api/favorite.api'
 import productApi from '~/api/product.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
@@ -77,11 +78,24 @@ const ProductDetail: FC = () => {
     mutationFn: (product: Product) => cartApi.addToCart(product, {})
   })
 
+  const { mutate: favorite } = useMutation({
+    mutationKey: ['favorite', 'add'],
+    mutationFn: (dto: Product) => favoriteApi.addFavorite(dto, {})
+  })
+
   const handleAddToCart = () => {
     mutate(product!, {
       onSuccess: () => {
         toast.success('Thêm thành công')
         dispatch(actions.addToCart(1))
+        invalidateProduct()
+      }
+    })
+  }
+
+  const handleAddToFavorite = () => {
+    favorite(product!, {
+      onSuccess: () => {
         invalidateProduct()
       }
     })
@@ -111,8 +125,8 @@ const ProductDetail: FC = () => {
                 Tags: <strong>{JSON.stringify(product?.category)}</strong>
               </div>
             </div>
-            <div className='flex items-center mb-5'>
-              <div className='mr-2'>
+            <div className='flex items-center mb-5 space-x-2'>
+              <div>
                 <span
                   className='py-2 px-3 border border-[#353535] cursor-pointer hover:bg-[#ddd]'
                   onClick={() => setQuantity(quantity === 1 ? 1 : quantity - 1)}
@@ -134,6 +148,14 @@ const ProductDetail: FC = () => {
                 onClick={handleAddToCart}
               >
                 {product?.inUserCart.includes(auth?.username!) ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
+              </Button>
+              <Button
+                disabled={product?.inUserFavorite.includes(auth?.username!)}
+                primary
+                custom='w-auto rounded-none py-2'
+                onClick={handleAddToFavorite}
+              >
+                {product?.inUserFavorite.includes(auth?.username!) ? 'Đã có trong yêu thích' : 'Thêm vào yêu thích'}
               </Button>
             </div>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-12'>

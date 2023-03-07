@@ -147,6 +147,14 @@ const Navigation: FC = () => {
                   Giỏ hàng
                 </NavLink>
               </li>
+              <li className='block py-5 px-4'>
+                <NavLink
+                  to='/yeu-thich'
+                  className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
+                >
+                  Yêu thích
+                </NavLink>
+              </li>
               <li className='block py-5 px-4' onClick={handleLogout}>
                 <NavLink
                   to='/'

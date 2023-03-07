@@ -8,8 +8,8 @@ const cartApi = {
     return privateAxios.get('/cart', { params: query, signal })
   },
 
-  getUserCartCount: (query: Query): Promise<any> => {
-    return privateAxios.get('/cart/count', { params: query })
+  getUserCartCount: (query: Query, signal?: AbortSignal): Promise<any> => {
+    return privateAxios.get('/cart/count', { params: query, signal })
   },
 
   addToCart: (dto: Product, query: Query): Promise<Cart> => {

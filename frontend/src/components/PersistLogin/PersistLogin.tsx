@@ -16,9 +16,6 @@ const PersistLogin: FC = () => {
   useEffect(() => {
     const verifyRefreshToken = async () => {
       try {
-        const count = await cartApi.getUserCartCount({})
-        dispatch(actions.setCartCount(count.count))
-
         setAuth((prev: any) => ({
           ...prev,
           isAuthenticated: cookies.userAuth?.isAuthenticated,
@@ -26,6 +23,13 @@ const PersistLogin: FC = () => {
           authorities: cookies.userAuth?.authorities,
           authority: cookies.userAuth?.authority
         }))
+
+        const controller = new AbortController()
+        if (Boolean(cookies.userAuth?.isAuthenticated) === false) {
+          controller.abort()
+        }
+        const count = await cartApi.getUserCartCount({}, controller.signal)
+        dispatch(actions.setCartCount(count.count))
       } catch (error) {
         console.log(error)
       } finally {
@@ -36,10 +40,6 @@ const PersistLogin: FC = () => {
     !auth?.isAuthenticated ? verifyRefreshToken() : setIsLoading(false)
   }, [])
 
-  // useEffect(() => {
-  //   console.log(`isLoading: ${isLoading}`)
-  //   console.log(`at: ${JSON.stringify(auth?.accessToken)}`)
-  // }, [isLoading])
   return <>{isLoading ? <p>Loading</p> : <Outlet />}</>
 }
 

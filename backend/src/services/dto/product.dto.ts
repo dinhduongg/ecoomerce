@@ -16,6 +16,7 @@ export class ProductDTO implements IProduct {
   discount_price: number
   category: string[]
   inUserCart: string[]
+  inUserFavorite: string[]
   is_featured: boolean
   is_new: boolean
   num_review: number

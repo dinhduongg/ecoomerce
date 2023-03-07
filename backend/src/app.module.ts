@@ -11,6 +11,7 @@ import { ProductModule } from './module/product.module'
 import { ReviewModule } from './module/review.module'
 import { VoucherModule } from './module/voucher.module'
 import { CartModule } from './module/cart.module'
+import { FavoriteModule } from './module/favorite.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { CartModule } from './module/cart.module'
     ProductModule,
     ReviewModule,
     VoucherModule,
-    CartModule
+    CartModule,
+    FavoriteModule
   ],
   controllers: [AppController],
   providers: [AppService]
