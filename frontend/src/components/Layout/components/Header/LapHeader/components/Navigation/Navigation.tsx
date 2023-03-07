@@ -104,10 +104,10 @@ const Navigation: FC = () => {
   return (
     <div
       className={classNames(
-        'flex flex-wrap items-center justify-center bg-white transition-all duration-300 z-20 shadow-lg-header',
+        'flex flex-wrap items-center justify-center bg-white transition-all duration-300 z-20 shadow-lg-header w-full',
         {
-          'fixed w-full top-0 h-16': Boolean(st > 50),
-          'relative h-20': Boolean(st < 50)
+          'fixed top-0 py-0': Boolean(st > 50),
+          'relative py-2': Boolean(st < 50)
         }
       )}
     >
