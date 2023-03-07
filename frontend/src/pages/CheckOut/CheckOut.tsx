@@ -1,9 +1,26 @@
-import { FC, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { FC, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import cartApi from '~/api/cart.api'
 import Button from '~/components/Button'
 import Helmet from '~/components/Helmet'
 
 const Checkout: FC = () => {
   const [payment, setPayment] = useState<string>('pay1')
+  const navigate = useNavigate()
+
+  const { data: userCart } = useQuery({
+    queryKey: ['userCart'],
+    queryFn: () => cartApi.getUserCart({})
+  })
+
+  useEffect(() => {
+    if (userCart?.products.length === 0) {
+      toast.error('Bạn chưa có gì để thanh toán')
+      navigate('/cua-hang')
+    }
+  }, [])
 
   return (
     <Helmet title='Thanh toán'>

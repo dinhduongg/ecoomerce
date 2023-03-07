@@ -53,6 +53,11 @@ const Navigation: FC = () => {
     { path: '/lien-he', name: 'Liên hệ' }
   ]
 
+  const permissionRoutes = [
+    { path: '/gio-hang', name: 'Giỏ hàng' },
+    { path: '/yeu-thich', name: 'Yêu thích' }
+  ]
+
   const authRoutes = [
     { name: 'Đăng nhập', path: '/dang-nhap' },
     { name: 'Đăng ký', path: '/dang-ky' }
@@ -138,22 +143,23 @@ const Navigation: FC = () => {
 
           {auth?.isAuthenticated && (
             <>
-              <li className='block py-5 px-4'>
-                <NavLink
-                  to='/gio-hang'
-                  className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
-                >
-                  Giỏ hàng
-                </NavLink>
-              </li>
-              <li className='block py-5 px-4'>
-                <NavLink
-                  to='/yeu-thich'
-                  className='text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300'
-                >
-                  Yêu thích
-                </NavLink>
-              </li>
+              {permissionRoutes.map((route) => {
+                return (
+                  <li key={route.path} className='block py-5 px-4'>
+                    <NavLink
+                      className={classNames(
+                        'text-[#333333] hover:border-b hover:border-b-[#333333] transition-all duration-300',
+                        {
+                          'text-[#e65540]': location.pathname === route.path
+                        }
+                      )}
+                      to={route.path}
+                    >
+                      {route.name}
+                    </NavLink>
+                  </li>
+                )
+              })}
               <li className='block py-5 px-4' onClick={handleLogout}>
                 <NavLink
                   to='/'

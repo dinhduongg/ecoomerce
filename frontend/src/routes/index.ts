@@ -26,7 +26,6 @@ const publicRoutes: route[] = [
   { path: '/blog', component: Blog, layout: DefaultLayout },
   { path: '/gioi-thieu', component: About, layout: DefaultLayout },
   { path: '/lien-he', component: Contact, layout: DefaultLayout },
-  { path: '/thanh-toan', component: CheckOut, layout: DefaultLayout },
   { path: '/san-pham/:id', component: ProductDetail, layout: DefaultLayout },
   { path: '/dang-nhap', component: SignIn, layout: null },
   { path: '/dang-ky', component: SignUp, layout: null },
@@ -35,6 +34,7 @@ const publicRoutes: route[] = [
 
 const privateUserRoutes: route[] = [
   { path: '/gio-hang', component: Cart, layout: DefaultLayout },
+  { path: '/thanh-toan', component: CheckOut, layout: DefaultLayout },
   { path: '/yeu-thich', component: Favorite, layout: DefaultLayout }
 ]
 
