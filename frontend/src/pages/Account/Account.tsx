@@ -35,9 +35,8 @@ const Account: FC = () => {
           <ul>
             {routes.map((route, index) => {
               return (
-                <li className='block'>
+                <li className='block' key={index}>
                   <NavLink
-                    key={index}
                     to={route.to}
                     className={({ isActive }) =>
                       `inline-block my-1 duration-200 ${isActive ? 'text-button-hover' : 'hover:text-button-hover'}`
@@ -50,7 +49,7 @@ const Account: FC = () => {
             })}
           </ul>
         </div>
-        <div className='col-span-10 shadow-account-shadow p-2'>
+        <div className='col-span-10 shadow-account-shadow'>
           <Routes>
             {accountChildrenRoutes.map((route, index) => {
               const Page = route.component
