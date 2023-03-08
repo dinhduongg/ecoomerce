@@ -12,7 +12,7 @@ const AnimationRoutes: FC = () => {
   const location = useLocation()
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence>
       <Routes location={location} key={location.pathname}>
         {/* public route */}
         <Route element={<PersistLogin />}>

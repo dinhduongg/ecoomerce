@@ -1,9 +1,15 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Link } from 'react-router-dom'
+import DatePicker from 'react-datepicker'
 import Button from '~/components/Button'
 import { secureInfo } from '~/utils/utils'
 
+import 'react-datepicker/dist/react-datepicker.css'
+
 const Profile: FC = () => {
+  const [date, setDate] = useState(new Date())
+  console.log(date.toISOString())
+
   return (
     <div>
       <div className='px-7 py-6 border-b'>
@@ -48,6 +54,18 @@ const Profile: FC = () => {
               <input type='radio' name='gender' value='orther' id='orther' />
               <label htmlFor='orther'>Khác</label>
             </div>
+          </div>
+        </div>
+        <div className='grid grid-cols-12 gap-4 items-center'>
+          <div className='col-span-2 text-right'>Ngày sinh: </div>
+          <div className='col-span-3 flex items-center space-x-3'>
+            <DatePicker
+              dateFormat='dd-MM-yyyy'
+              closeOnScroll={(e) => e.target === document}
+              className='input !py-1 col-span-3 !w-fit z-20'
+              selected={date}
+              onChange={(date) => setDate(date!)}
+            />
           </div>
         </div>
         <div className='grid grid-cols-12 gap-4 items-center'>
