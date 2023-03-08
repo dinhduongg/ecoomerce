@@ -17,13 +17,13 @@ const DefaultLayout: FC<Props> = ({ children }) => {
       <header className='lg:hidden'>
         <MobileHeader />
       </header>
-      <motion.div
+      {/* <motion.div
         initial={{ y: '50px', opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.2 } }}
         exit={{ y: '50px', opacity: 0, transition: { duration: 0.2 } }}
-      >
-        {children}
-      </motion.div>
+      > */}
+      {children}
+      {/* </motion.div> */}
       <Footer />
     </div>
   )

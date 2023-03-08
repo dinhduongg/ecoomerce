@@ -1,19 +1,18 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import classNames from 'classnames'
 import { FC, MouseEvent, useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import cartApi from '~/api/cart.api'
 import Button from '~/components/Button'
 import useAuth from '~/hooks/useAuth'
-import useLogout from '~/hooks/useLogout'
 import useCartCount from '~/hooks/useCartCount'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import cartApi from '~/api/cart.api'
-import { vietnameseCurrency } from '~/utils/utils'
-import { ProductCart } from '~/shared/cart.interface'
-import { toast } from 'react-toastify'
-import { actions } from '~/reducer/cartCount'
 import { useInvalidateProduct } from '~/hooks/useInvalidateQuery'
+import useLogout from '~/hooks/useLogout'
+import { actions } from '~/reducer/cartCount'
+import { ProductCart } from '~/shared/cart.interface'
+import { vietnameseCurrency } from '~/utils/utils'
 
 const Navigation: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -25,17 +24,20 @@ const Navigation: FC = () => {
   const queryClient = useQueryClient()
 
   const { data: userCart, refetch } = useQuery({
-    queryKey: ['userCart'],
+    queryKey: ['userCart', 'nav'],
     queryFn: () => {
       const controller = new AbortController()
-      if (Boolean(auth?.isAuthenticated) === false) {
+      if (Boolean(auth?.isAuthenticated) === false || !isOpen) {
         controller.abort()
       }
       return cartApi.getUserCart({}, controller.signal)
     },
+    enabled: isOpen === true,
     cacheTime: 60 * 1000 * 10,
     retry: false
   })
+
+  console.log(isOpen, userCart)
 
   const { mutateAsync: remove, isLoading: rLoading } = useMutation({
     mutationFn: (product: ProductCart) => {

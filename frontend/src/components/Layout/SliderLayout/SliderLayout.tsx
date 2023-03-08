@@ -18,16 +18,16 @@ const SliderLayout: FC<Props> = ({ children }) => {
       <header className='lg:hidden'>
         <MobileHeader />
       </header>
-      <motion.div
-        initial={{ y: '50px', opacity: 0 }}
-        animate={{ y: 0, opacity: 1, transition: { duration: 0.2 } }}
+      {/* <motion.div
+        initial={{ y: '150px', opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 1 } }}
         exit={{ y: '50px', opacity: 0, transition: { duration: 0.2 } }}
-      >
-        <div className='h-[370px] lg:h-[570px]'>
-          <Slider />
-        </div>
-        {children}
-      </motion.div>
+      > */}
+      <div className='h-[370px] lg:h-[570px]'>
+        <Slider />
+      </div>
+      {children}
+      {/* </motion.div> */}
       <Footer />
     </div>
   )
