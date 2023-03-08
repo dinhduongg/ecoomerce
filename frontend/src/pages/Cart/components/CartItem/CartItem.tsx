@@ -42,7 +42,7 @@ const CartItem: FC<Props> = ({ cart }) => {
     updateQty(obj, {
       onSuccess: () => {
         type === 'increase' ? dispatch(actions.addToCart(1)) : dispatch(actions.removeFromCart(1))
-        queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
+        queryClient.invalidateQueries({ queryKey: ['userCart'] })
       }
     })
   }
@@ -51,7 +51,7 @@ const CartItem: FC<Props> = ({ cart }) => {
     remove(id, {
       onSuccess: () => {
         dispatch(actions.removeFromCart(cart.quantity))
-        queryClient.invalidateQueries({ queryKey: ['userCart'], exact: true })
+        queryClient.invalidateQueries({ queryKey: ['userCart'] })
         invalidateProduct()
       }
     })

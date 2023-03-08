@@ -9,7 +9,7 @@ import CartItem from './components/CartItem'
 import CheckOut from './components/CheckOut'
 
 const Cart: FC = () => {
-  const { data: userCart } = useQuery({
+  const { data: userCart, isLoading } = useQuery({
     queryKey: ['userCart'],
     queryFn: () => cartApi.getUserCart({})
   })
