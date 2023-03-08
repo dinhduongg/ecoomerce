@@ -65,7 +65,7 @@ module.exports = {
 
         // old
         'header-btn': 'inset 0 0 0 100px rgb(0 0 0 / 20%)',
-        'input-shadow': 'inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(248 183 66 / 60%)'
+        'account-shadow': 'inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(0 0 0 / 20%)'
       },
       colors: {
         // new
