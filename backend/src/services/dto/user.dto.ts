@@ -1,5 +1,14 @@
 import { Address, User as IUser } from '@/entities/shared/account.interface'
-import { AuthorityRole } from '@/entities/shared/enum'
+import { AddressType, AuthorityRole, Gender } from '@/entities/shared/enum'
+
+export class AddressDTO implements Address {
+  city_province?: string
+  district?: string
+  wards?: string
+  detail_address?: string
+  isMain: boolean
+  addressType: AddressType
+}
 
 export class UserDTO implements IUser {
   username: string
@@ -7,6 +16,9 @@ export class UserDTO implements IUser {
   email?: string
   phone?: string
   fullname?: string
+  gender?: Gender
+  birthday?: Date
+
   authorities: AuthorityRole[]
   authority: AuthorityRole
   refreshToken?: string

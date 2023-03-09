@@ -1,12 +1,12 @@
-import { AuthorityRole } from './enum'
+import { AddressType, AuthorityRole, Gender } from './enum'
 
 export interface Address {
-  city?: string
-  street?: string
-  postalCode?: string
-  country?: string
-  description?: string
+  city_province?: string
+  district?: string
+  wards?: string
+  detail_address?: string
   isMain: boolean
+  addressType: AddressType
 }
 
 export interface Authentication {
@@ -14,6 +14,8 @@ export interface Authentication {
   password: string
   email?: string
   phone?: string
+  gender?: Gender
+  birthday?: Date
   fullname?: string
   authorities: AuthorityRole[]
   authority: AuthorityRole

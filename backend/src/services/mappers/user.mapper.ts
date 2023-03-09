@@ -1,8 +1,9 @@
+import { Address } from '@/entities/shared/account.interface'
 import { User } from '@/entities/user.entity'
 import { Injectable } from '@nestjs/common'
 import { hashSync } from 'bcrypt'
 import { Builder } from 'builder-pattern'
-import { UserDTO } from '../dto/user.dto'
+import { AddressDTO, UserDTO } from '../dto/user.dto'
 
 @Injectable()
 export class UserMapper {
@@ -14,6 +15,8 @@ export class UserMapper {
         .email(source.email)
         .phone(source.phone)
         .fullname(source.fullname)
+        .gender(source.gender)
+        .birthday(source.birthday)
         .authorities(source.authorities)
         .authority(source.authority)
         .refreshToken(source.refreshToken)
@@ -34,6 +37,8 @@ export class UserMapper {
         .email(source.email)
         .phone(source.phone)
         .fullname(source.fullname)
+        .gender(source.gender)
+        .birthday(source.birthday)
         .authorities(source.authorities)
         .authority(source.authority)
         .refreshToken(source.refreshToken)
@@ -42,6 +47,19 @@ export class UserMapper {
         .updatedAt(source.updatedAt)
         // .createdBy(source.createdBy)
         // .updatedBy(source.updatedBy)
+        .build()
+    )
+  }
+
+  addressMapper(dto: AddressDTO): AddressDTO {
+    return (
+      Builder(AddressDTO)
+        .city_province(dto.city_province)
+        .district(dto.district)
+        .wards(dto.wards)
+        .detail_address(dto.detail_address)
+        .isMain(dto.isMain)
+        .addressType(dto.addressType)
         .build()
     )
   }
@@ -55,6 +73,8 @@ const userMapper = {
       .email(d.email)
       .phone(d.phone)
       .fullname(d.fullname)
+      .gender(d.gender)
+      .birthday(d.birthday)
       .authorities(d.authorities)
       .authority(d.authority)
       .refreshToken(d.refreshToken)
@@ -74,6 +94,8 @@ const userMapper = {
         .email(source.email)
         .phone(source.phone)
         .fullname(source.fullname)
+        .gender(source.gender)
+        .birthday(source.birthday)
         .authorities(source.authorities)
         .authority(source.authority)
         .refreshToken(source.refreshToken)

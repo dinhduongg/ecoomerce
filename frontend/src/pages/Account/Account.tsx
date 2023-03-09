@@ -1,11 +1,13 @@
 import { FC, Fragment, useEffect } from 'react'
 import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { DefaultLayout } from '~/components/Layout'
+import useAuth from '~/hooks/useAuth'
 import { accountChildrenRoutes } from '~/routes/nestedRoutes'
 
 const Account: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const { auth } = useAuth()
 
   const routes = [
     { to: 'thong-tin', name: 'Hồ sơ' },
@@ -30,7 +32,7 @@ const Account: FC = () => {
               src='https://preview.colorlib.com/theme/fashe/images/icons/icon-header-01.png.webp'
               alt='ICON'
             />
-            <span>username</span>
+            <span>{auth?.username}</span>
           </div>
           <ul>
             {routes.map((route, index) => {

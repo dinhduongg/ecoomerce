@@ -62,7 +62,7 @@ const Navigation: FC = () => {
       className={classNames(
         'flex flex-wrap items-center justify-center bg-white transition-all duration-300 z-20 shadow-lg-header w-full',
         {
-          'fixed top-0 py-0': Boolean(st > 50),
+          'fixed top-0 py-0': Boolean(st >= 50),
           'relative py-2': Boolean(st < 50)
         }
       )}

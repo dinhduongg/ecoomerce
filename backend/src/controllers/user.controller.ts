@@ -1,14 +1,15 @@
 import { Roles, RolesGuard } from '@/authentication'
 import { TokenVerifyGuard } from '@/authentication/guards/token-verify.guard'
+import { Address } from '@/entities/shared/account.interface'
 import { AuthorityRole } from '@/entities/shared/enum'
 import { UserDTO } from '@/services/dto/user.dto'
-import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards, Req } from '@nestjs/common'
 import { UserService } from '../services/user.service'
 
 @Controller('users')
 @UseGuards(TokenVerifyGuard, RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get()
   @Roles(AuthorityRole.ADMIN, AuthorityRole.MANAGER)
@@ -16,17 +17,18 @@ export class UserController {
     return this.userService.findAll()
   }
 
-  @Get(':username')
-  findOne(@Param('username') username: string): Promise<UserDTO> {
-    return this.userService.findOne(username)
+  @Get('info')
+  findOne(@Req() req): Promise<UserDTO> {
+    return this.userService.findOne(req.user.username)
   }
 
-  @Patch('update/:username')
-  update(@Param('username') username: string, @Body() dto: UserDTO): Promise<UserDTO> {
-    return this.userService.update(username, dto)
+  @Patch('update')
+  update(@Req() req, @Body() dto: Partial<UserDTO> & { address: Address }): Promise<UserDTO> {
+    return this.userService.update(req.user.username, dto)
   }
 
   @Patch(':username/password/:action')
+  @Roles(AuthorityRole.ADMIN, AuthorityRole.MANAGER)
   resetPassword(
     @Param('username') username: string,
     @Param('action') action: string,

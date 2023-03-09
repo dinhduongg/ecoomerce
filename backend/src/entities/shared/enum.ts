@@ -17,3 +17,14 @@ export enum Actions {
   SOLDCOUNT = 'soldcount',
   SIMILAR = 'similar'
 }
+
+export enum AddressType {
+  HOME = 'home',
+  OFFICE = 'office'
+}
+
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+  ORTHER = 'orther'
+}

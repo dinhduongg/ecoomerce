@@ -12,6 +12,7 @@ import { HttpException } from '@nestjs/common/exceptions'
 import { HttpStatus } from '@nestjs/common/enums'
 import { wrap } from '@mikro-orm/core'
 import { registerData } from '@/entities/shared/auth.interface'
+import { Address } from '@/entities/shared/account.interface'
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,7 @@ export class UserService {
     protected readonly mapper: UserMapper,
     @Inject(CACHE_MANAGER)
     protected readonly _cache: Cache
-  ) {}
+  ) { }
 
   async findAll(): Promise<UserDTO[]> {
     try {
@@ -68,11 +69,23 @@ export class UserService {
     }
   }
 
-  async update(username: string, dto: UserDTO): Promise<UserDTO> {
+  async update(username: string, dto: Partial<UserDTO> & { address: Address }): Promise<UserDTO> {
     try {
       const user = await this.repository.findOne({ username: username })
       if (!user) throw new HttpException(`Không tìm thấy người dùng ${username}`, HttpStatus.BAD_REQUEST)
+
+      if (dto.address) {
+        dto.addresses = [...user.addresses, dto.address].sort((a, b) => +b.isMain - +a.isMain)
+      }
+      // user.fullname = dto.fullname ?? user.fullname
+      // user.email = dto.email ?? user.email
+      // user.phone = dto.phone ?? user.phone
+      // user.gender = dto.gender ?? user.gender
+      // user.birthday = dto.birthday ?? user.birthday
+      // user.addresses = [...user.addresses, dto.address].sort((a, b) => +b.isMain - +a.isMain) ?? user.addresses
+
       wrap(user).assign(dto)
+
       await this.repository.flush()
       return userMapper.e2d(user)
     } catch (error) {

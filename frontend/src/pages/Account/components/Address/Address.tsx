@@ -27,7 +27,7 @@ const Address: FC = () => {
       </div>
 
       {/* modal */}
-      <AnimatePresence initial={false} exitBeforeEnter={true}>
+      <AnimatePresence initial={false} mode='wait'>
         {isModalOpen && (
           <Modal title='Thêm địa chỉ mới' handleCloseModal={handleCloseModal}>
             <form className='space-y-4'>

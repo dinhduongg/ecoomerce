@@ -63,7 +63,7 @@ const Button: FC<Props> = ({
         {
           'pointer-events-none opacity-50': Boolean(disabled),
           '!w-full': Boolean(full),
-          'bg-button-primary text-white hover:bg-button-hover hover:border-button-hover border border-button-primary':
+          'border border-transparent bg-button-primary text-white hover:bg-button-hover hover:border-button-hover':
             Boolean(primary),
           'border border-button-primary text-button-primary hover:bg-button-primary hover:text-white': Boolean(outline),
           'rounded-[20px]': Boolean(rounded)
