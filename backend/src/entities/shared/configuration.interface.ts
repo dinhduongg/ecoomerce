@@ -14,8 +14,18 @@ export namespace Configuration {
     }
   }
 
+  export interface Ghn {
+    jwt: string
+    location: {
+      province: string
+      district: string
+      ward: string
+    }
+  }
+
   export interface Configure {
     database: Configuration.Database
     security: Configuration.Security
+    ghn: Configuration.Ghn
   }
 }

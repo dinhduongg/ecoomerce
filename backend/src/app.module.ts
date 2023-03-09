@@ -12,6 +12,7 @@ import { ReviewModule } from './module/review.module'
 import { VoucherModule } from './module/voucher.module'
 import { CartModule } from './module/cart.module'
 import { FavoriteModule } from './module/favorite.module';
+import { ShippingModule } from './module/shipping.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { FavoriteModule } from './module/favorite.module';
     ReviewModule,
     VoucherModule,
     CartModule,
-    FavoriteModule
+    FavoriteModule,
+    ShippingModule
   ],
   controllers: [AppController],
   providers: [AppService]

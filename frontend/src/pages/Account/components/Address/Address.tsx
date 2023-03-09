@@ -1,7 +1,9 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence } from 'framer-motion'
 import { FC, useState } from 'react'
+import shippingApi from '~/api/shipping.api'
 import Button from '~/components/Button'
 import Modal from '~/components/Modal'
 
@@ -15,6 +17,11 @@ const Address: FC = () => {
   const handleCloseModal = (data: any) => {
     setIsModalOpen(data)
   }
+
+  useQuery({
+    queryKey: ['location'],
+    queryFn: () => shippingApi.getProvince({})
+  })
 
   return (
     <div>

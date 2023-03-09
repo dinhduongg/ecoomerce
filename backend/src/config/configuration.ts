@@ -16,4 +16,12 @@ export default () =>
         }
       }
     })
+    .ghn({
+      jwt: process.env.TOKEN,
+      location: {
+        province: process.env.PROVINCE_API,
+        district: process.env.DISTRICT_API,
+        ward: process.env.WARD_API,
+      }
+    })
     .build()
