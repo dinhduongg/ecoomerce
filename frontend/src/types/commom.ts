@@ -22,6 +22,13 @@ export interface profileForm {
   birthday: Date
 }
 
+export interface LocationForm {
+  fullname: string
+  phone: string
+  location: string
+  external_location: string
+}
+
 export interface path {
   path: string
 }

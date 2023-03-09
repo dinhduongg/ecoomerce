@@ -1,8 +1,9 @@
 import { Query } from "~/shared/interface"
+import { Province } from "~/shared/location.interface"
 import { publicAxios } from "~/utils/axiosClient"
 
 const shippingApi = {
-    getProvince: (query: Query) => {
+    getProvince: (query: Query): Promise<Province[]> => {
         return publicAxios.get('/shipping/province', { params: query })
     },
 

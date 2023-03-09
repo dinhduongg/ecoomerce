@@ -1,11 +1,10 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence } from 'framer-motion'
 import { FC, useState } from 'react'
-import shippingApi from '~/api/shipping.api'
 import Button from '~/components/Button'
 import Modal from '~/components/Modal'
+import Loaction from '~/components/Loaction'
 
 const Address: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -17,11 +16,6 @@ const Address: FC = () => {
   const handleCloseModal = (data: any) => {
     setIsModalOpen(data)
   }
-
-  useQuery({
-    queryKey: ['location'],
-    queryFn: () => shippingApi.getProvince({})
-  })
 
   return (
     <div>
@@ -46,7 +40,7 @@ const Address: FC = () => {
                   <input type='text' placeholder='Số điện thoại' className='input !py-2 !rounded' />
                 </div>
               </div>
-              <div className='grid grid-cols-3'>
+              <div className='grid grid-cols-3 space-y-4'>
                 <div className='col-span-full'>
                   <input
                     type='text'
@@ -54,10 +48,8 @@ const Address: FC = () => {
                     className='input !py-2 !rounded w-full'
                   />
                 </div>
-                <div className='lg:hidden col-span-full grid grid-cols-3'>
-                  <div>Tỉnh/Thành phố</div>
-                  <div>Quận/Huyện</div>
-                  <div>Phường/Xã</div>
+                <div className='col-span-full'>
+                  <Loaction />
                 </div>
               </div>
               <div>
