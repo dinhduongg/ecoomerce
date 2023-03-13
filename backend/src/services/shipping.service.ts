@@ -1,8 +1,9 @@
+import { Query } from '@/entities/shared/interface';
 import { HttpService } from '@nestjs/axios/dist';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
-import { catchError, firstValueFrom, lastValueFrom } from 'rxjs';
+import { catchError, firstValueFrom } from 'rxjs';
 import { DistrictDTO, ProvinceDTO, WardDTO } from './dto/location.dto';
 import { LocationMapper } from './mappers/location.mapper';
 
@@ -14,7 +15,9 @@ export class ShippingService {
     private readonly mapper: LocationMapper
   ) { }
 
-  async getProvince() {
+  async getProvince(query: Query) {
+    const { search } = query
+
     const token = this.config.get('ghn.jwt')
     const url = this.config.get<string>('ghn.location.province')
     const { data } = await firstValueFrom(
@@ -29,8 +32,9 @@ export class ShippingService {
         }),
       ))
 
+    const newData = data.data.filter((item: ProvinceDTO) => item.ProvinceName?.toLowerCase().includes(search?.toLowerCase()))
 
-    return data.data.map((item: ProvinceDTO) => this.mapper.toProvinceDTO(item))
+    return newData.map((item: ProvinceDTO) => this.mapper.toProvinceDTO(item))
   }
 
   async getDistrict(dto: any) {
@@ -53,7 +57,9 @@ export class ShippingService {
           }),
         ))
 
-    return data.data.map((item: DistrictDTO) => this.mapper.toDistrictDTO(item))
+    const newData = data.data.filter((item: DistrictDTO) => item.DistrictName?.toLowerCase().includes(dto.search?.toLowerCase()))
+
+    return newData.map((item: DistrictDTO) => this.mapper.toDistrictDTO(item))
   }
 
   async getWard(dto: any) {
@@ -67,9 +73,9 @@ export class ShippingService {
           headers: {
             Token: token
           },
-          params: {
-            district_id: Number(dto.district_id)
-          }
+          // params: {
+          //   district_id: Number(dto.district_id)
+          // }
         }).pipe(
           catchError((error: AxiosError) => {
             console.log(error.response.data);
@@ -77,7 +83,9 @@ export class ShippingService {
           }),
         ))
 
-    return data.data.map((item: WardDTO) => this.mapper.toWardDTO(item))
+    const newData = dto.search ? data.data.filter((item: WardDTO) => item.WardName?.toLowerCase().includes(dto.search?.toLowerCase())) : data.data.map((item: WardDTO) => this.mapper.toWardDTO(item))
+
+    return newData
   }
 
   create(createLocationDto: any) {

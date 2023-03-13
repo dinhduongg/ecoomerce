@@ -43,7 +43,7 @@
 
 button:disabled,
 .disabled {
-  @apply bg-gray-300  hover:bg-gray-300 cursor-default;
+  @apply bg-gray-300  hover:bg-gray-300 cursor-not-allowed;
 }
 
 .heart:disabled {

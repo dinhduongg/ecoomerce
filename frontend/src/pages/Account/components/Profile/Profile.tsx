@@ -36,7 +36,7 @@ const Profile: FC = () => {
         email: data.email ?? '',
         phone: data.phone ?? '',
         gender: data.gender ?? Gender.MALE,
-        birthday: new Date(data.birthday!) ?? new Date()
+        birthday: data.birthday ? new Date(data.birthday!) : new Date()
       })
     }
   })

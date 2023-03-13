@@ -1,14 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ShippingService } from '@/services/shipping.service';
 import { Query } from '@nestjs/common/decorators';
+import { Query as IQuery } from '@/entities/shared/interface';
 
 @Controller('shipping')
 export class ShippingController {
   constructor(private readonly shippingService: ShippingService) { }
 
   @Get('province')
-  async getProvince() {
-    return this.shippingService.getProvince()
+  async getProvince(@Query() query: IQuery) {
+    return this.shippingService.getProvince(query)
   }
 
   @Get('district')
