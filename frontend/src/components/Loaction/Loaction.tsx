@@ -125,7 +125,7 @@ const Loaction: FC<Props> = ({ search, setProvince, setDistrict, setWard, locati
           )
         })}
       </div>
-      <div className='absolute w-full z-50 max-h-60 bg-white border-x border-b overflow-auto'>
+      <div className='absolute w-full z-50 max-h-60 bg-white border-x border-b shadow-2xl overflow-auto'>
         {type === 0 &&
           provinces.map((province) => {
             return (
@@ -154,7 +154,7 @@ const Loaction: FC<Props> = ({ search, setProvince, setDistrict, setWard, locati
           wards.map((ward) => {
             return (
               <div
-                key={ward.DistrictID + ward.WardCode}
+                key={ward.WardCode}
                 className='p-2 hover:bg-slate-200 cursor-pointer'
                 onClick={() => handleSetWard(ward)}
               >

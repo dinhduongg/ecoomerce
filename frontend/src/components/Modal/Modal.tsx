@@ -6,11 +6,16 @@ interface Props {
   children?: React.ReactNode
   title: string
   handleCloseModal: any
+  handleSubmit: any
 }
 
-const Modal: FC<Props> = ({ children, title, handleCloseModal }) => {
+const Modal: FC<Props> = ({ children, title, handleCloseModal, handleSubmit }) => {
   const closeModal = () => {
     handleCloseModal(false)
+  }
+
+  const onSubmit = () => {
+    handleSubmit(true)
   }
 
   return (
@@ -56,7 +61,9 @@ const Modal: FC<Props> = ({ children, title, handleCloseModal }) => {
             <Button outline onClick={closeModal}>
               Trở lại
             </Button>
-            <Button primary>Hoàn thành</Button>
+            <Button primary onClick={onSubmit}>
+              Hoàn thành
+            </Button>
           </div>
         </div>
         {/* </div> */}

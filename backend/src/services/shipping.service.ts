@@ -32,9 +32,9 @@ export class ShippingService {
         }),
       ))
 
-    const newData = data.data.filter((item: ProvinceDTO) => item.ProvinceName?.toLowerCase().includes(search?.toLowerCase()))
+    const newData = search ? data.data.filter((item: ProvinceDTO) => item.ProvinceName?.toLowerCase().includes(search?.toLowerCase())) : data.data.map((item: ProvinceDTO) => this.mapper.toProvinceDTO(item))
 
-    return newData.map((item: ProvinceDTO) => this.mapper.toProvinceDTO(item))
+    return newData
   }
 
   async getDistrict(dto: any) {
@@ -57,9 +57,9 @@ export class ShippingService {
           }),
         ))
 
-    const newData = data.data.filter((item: DistrictDTO) => item.DistrictName?.toLowerCase().includes(dto.search?.toLowerCase()))
+    const newData = dto?.search ? data.data.filter((item: DistrictDTO) => item.DistrictName?.toLowerCase().includes(dto.search?.toLowerCase())) : data.data.map((item: DistrictDTO) => this.mapper.toDistrictDTO(item))
 
-    return newData.map((item: DistrictDTO) => this.mapper.toDistrictDTO(item))
+    return newData
   }
 
   async getWard(dto: any) {
@@ -73,13 +73,13 @@ export class ShippingService {
           headers: {
             Token: token
           },
-          // params: {
-          //   district_id: Number(dto.district_id)
-          // }
+          params: {
+            district_id: dto.district_id
+          }
         }).pipe(
           catchError((error: AxiosError) => {
             console.log(error.response.data);
-            throw 'An error happened!';
+            throw 'An error happened when get WARD!';
           }),
         ))
 
